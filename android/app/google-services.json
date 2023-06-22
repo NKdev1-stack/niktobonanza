@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "260626753483",
+    "firebase_url": "https://nikto-bonanza-5a8df-default-rtdb.firebaseio.com",
+    "project_id": "nikto-bonanza-5a8df",
+    "storage_bucket": "nikto-bonanza-5a8df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260626753483:android:b5415684186db212ce784e",
+        "android_client_info": {
+          "package_name": "com.nkdevelopers.niktoearningapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "260626753483-i5kfog6ebuvqknbekc737ofpn17k1670.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nkdevelopers.niktoearningapp",
+            "certificate_hash": "441cc95bde1c800e991bf1737ee5b135bb9cffe5"
+          }
+        },
+        {
+          "client_id": "260626753483-h6lsdk092j28f80lqbmat06iq3790vla.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlm8NZ-kqigxmBMFrFpto1f4uiqQsR8Ec"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260626753483-h6lsdk092j28f80lqbmat06iq3790vla.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
