@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '215'
+    flutterVersionCode = '216'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '215'
+    flutterVersionName = '216'
 }
 
 apply plugin: 'com.android.application'
@@ -91,6 +91,8 @@ flutter {
 
 
 dependencies {
+    implementation 'com.applovin:applovin-sdk:+'
+    implementation 'com.applovin.mediation:unityads-adapter:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
