@@ -10,11 +10,11 @@ import 'package:niktobonanza/Rooms/MainMenueRoom.dart';
 import 'package:niktobonanza/Rooms/Models/cuntry.dart';
 import 'package:niktobonanza/utils/Toast.dart';
 
-class CoinbaseB extends StatefulWidget {
-  const CoinbaseB({Key? key}) : super(key: key);
+class Binance_W extends StatefulWidget {
+  const Binance_W({Key? key}) : super(key: key);
 
   @override
-  State<CoinbaseB> createState() => _CoinbaseBState();
+  State<Binance_W> createState() => _CoinbaseBState();
 }
 
 var UNiktos = 0;
@@ -22,8 +22,8 @@ var cash = 0;
 bool isNotSubmitted = true;
 var wthCode;
 var iA;
-var locationx;
 var RA;
+var locationx;
 TextEditingController _emailController = TextEditingController();
 Random rnd = Random();
 var RNDS = rnd.nextInt(100000000) * 10;
@@ -35,7 +35,7 @@ final _refAdmin = FirebaseDatabase.instance.ref("Admin");
 var formatter;
 final _key = GlobalKey<FormState>();
 
-class _CoinbaseBState extends State<CoinbaseB> {
+class _CoinbaseBState extends State<Binance_W> {
   @override
   void initState() {
     dataget();
@@ -101,15 +101,15 @@ class _CoinbaseBState extends State<CoinbaseB> {
     });
     _refAdmin.child("WithdrawRequest").child(_auth.currentUser!.uid).set({
       'Coins': UNiktos,
-      'CoinbaseEmail': _emailController.text.toString(),
+      'BinanceEmail': _emailController.text.toString(),
       'Date': formatter,
-     
+      
       'Country':locationx["country"],
     });
 
     _refDb.child(_auth.currentUser!.uid).update({
       'Niktos': 0,
-     
+    
       'WithdrawCode': 1,
     });
   }
@@ -133,7 +133,7 @@ class _CoinbaseBState extends State<CoinbaseB> {
           ),
         ),
         elevation: 0,
-        backgroundColor: Colors.blueAccent.shade700.withRed(12),
+        backgroundColor: Colors.grey[900],
         title: Row(
           children: [
             Icon(
@@ -198,8 +198,7 @@ class _CoinbaseBState extends State<CoinbaseB> {
                         ),
                         const Text("Method",
                             style: TextStyle(color: Colors.white)),
-                        Text("Coinbase",
-                            style: TextStyle(color: Colors.yellow)),
+                        Text("Binance", style: TextStyle(color: Colors.yellow)),
                       ],
                     ),
                     Column(
@@ -258,7 +257,7 @@ class _CoinbaseBState extends State<CoinbaseB> {
                                           left: 8, top: 6),
                                       child: isNotSubmitted
                                           ? Text(
-                                              "Enter Coinbase Email to Get Witdraw!",
+                                              "Enter Binance Email to Get Witdraw!",
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontSize: 16,
@@ -285,7 +284,7 @@ class _CoinbaseBState extends State<CoinbaseB> {
                                             }
                                           },
                                           decoration: InputDecoration(
-                                            hintText: "Coinbase Account Email",
+                                            hintText: "Binance Account Email",
                                             border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -308,7 +307,7 @@ class _CoinbaseBState extends State<CoinbaseB> {
                       Container(
                         height: MediaQuery.of(context).size.height * 0.075,
                         decoration: BoxDecoration(
-                            color: Colors.blueAccent.shade700.withRed(12),
+                            color: Colors.grey.shade900,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20),
                               topRight: Radius.circular(20),
@@ -321,7 +320,7 @@ class _CoinbaseBState extends State<CoinbaseB> {
                                 child: Padding(
                               padding: const EdgeInsets.only(left: 18),
                               child: Text(
-                                "Coinbase",
+                                "Binance",
                                 style: TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
@@ -374,17 +373,20 @@ class _CoinbaseBState extends State<CoinbaseB> {
                           width: MediaQuery.of(context).size.width * .54,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.yellow,
+                            color: Colors.black,
                           ),
                           child: const Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Icon(Icons.monetization_on_rounded),
+                              Icon(
+                                Icons.money_sharp,
+                                color: Colors.white,
+                              ),
                               Text(
                                 "Money Request",
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -411,4 +413,5 @@ class _CoinbaseBState extends State<CoinbaseB> {
 
     return locationx["country"];
   }
+
 }

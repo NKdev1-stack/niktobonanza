@@ -33,7 +33,7 @@ class _SplashScState extends State<SplashSc> {
         children: [
 
 
-          Center(child: Image.asset("assets/images/Nikto.png",height: 150,width: 150,)),
+          Center(child: Image.asset("assets/images/bitearn.png",height: 150,width: 150,)),
           SizedBox(height: 20,),
           CircularProgressIndicator(color: Colors.blue,strokeWidth: 5),
           

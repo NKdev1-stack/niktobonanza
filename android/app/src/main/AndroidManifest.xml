@@ -9,8 +9,10 @@
     </queries>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="Nikto Coins"
+        android:label="BitEarn"
         android:name="${applicationName}"
+                android:usesCleartextTraffic="true"
+
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

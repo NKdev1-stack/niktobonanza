@@ -14,25 +14,24 @@ class Captcha extends StatefulWidget {
 }
 
 class _CaptchaState extends State<Captcha> {
+  var RndNo;
+  TextEditingController _validatorController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  Random rnd = Random();
 
- var RndNo;
- TextEditingController _validatorController = TextEditingController();
- final _formKey = GlobalKey<FormState>();
- Random rnd = Random();
+  final _DBref = FirebaseDatabase.instance.ref("Workers");
+  final _UAuth = FirebaseAuth.instance;
 
- final _DBref = FirebaseDatabase.instance.ref("Workers");
- final _UAuth = FirebaseAuth.instance;
- 
- var UNiktos = 0;
- var TCaptcha =0;
-  var Level=0;
+  var UNiktos = 0;
+  var TCaptcha = 0;
+  var Level = 0;
 
   // Hide and Seek
 
- bool validatebtn = true;
- bool Adbtn = false;
- bool captchaWriter = true;
- final String _interstitial_ad_unit_id = "450bc990d365b2fb";
+  bool validatebtn = true;
+  bool Adbtn = false;
+  bool captchaWriter = true;
+  final String _interstitial_ad_unit_id = "450bc990d365b2fb";
  final String _rewarded_ad_unit_id =  "2eda4b8d0c86c6fc";
 
  var _interstitialRetryAttempt = 0;
@@ -43,9 +42,7 @@ class _CaptchaState extends State<Captcha> {
  final String _ad_unit_id = "45a079225c19874b";
 
 
- // Advertisement
-
-// Int Ad
+// / Int Ad
  initializeInterstitialAds() async{
    INTisReady = (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
 
@@ -94,8 +91,12 @@ class _CaptchaState extends State<Captcha> {
  }
 
 
- // Reward Ad
- void initializeRewardedAds()async {
+
+ 
+
+// Reward Ad
+
+void initializeRewardedAds()async {
    RWDisReady =  (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
 
    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
@@ -154,131 +155,107 @@ class _CaptchaState extends State<Captcha> {
            }));
  }
 
- @override
+
+  @override
   void initState() {
-   initializeRewardedAds();
+ initializeRewardedAds();
    initializeInterstitialAds();
-   RndGeneratorMethod();
-   getUserData();
+    RndGeneratorMethod();
+    getUserData();
     super.initState();
   }
 
-
   //Firebase Data Update
 
- updateUserData(){
+  updateUserData() {
+    // Coins Update
+    _DBref.child(_UAuth.currentUser!.uid).update({
+      'Niktos': ServerValue.increment(4),
+    });
 
-   // Coins Update
-   _DBref.child(_UAuth.currentUser!.uid).update({
+    try {
+      if (TCaptcha > 0) {
+        _validatorController.clear();
 
-     'Niktos' : ServerValue.increment(10),
+        _DBref.child(_UAuth.currentUser!.uid).update({
+          'Captchas': ServerValue.increment(-1),
+        });
+      }
+    } catch (exception) {}
+  }
 
+  // AdReward
 
-   });
+  AdRewardinCaptcha() {
+    
+  initializeRewardedAds();
+                          if (RWDisReady) {
+                            AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
+                          }
 
-   try{
-
-     if(TCaptcha>0){
-       _validatorController.clear();
-
-       _DBref.child(_UAuth.currentUser!.uid).update({
-
-         'Captchas' :  ServerValue.increment(-1),
-
-       });
-     }
-   }catch(exception){
-
-   }
-
- }
-
- // AdReward
-
- AdRewardinCaptcha(){
-   if(TCaptcha <= 0){
-
-     initializeRewardedAds();
-     if (RWDisReady) {
-       AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-
-     }
-
-     if(TCaptcha >=0){
-
-       // In this method we are using if else if captcha are greater than 0 all hidden widgets will show
-       getUserData();
-
-
-
-     }
-   }
-
- }
+    if (TCaptcha >= 0) {
+      // In this method we are using if else if captcha are greater than 0 all hidden widgets will show
+      getUserData();
+    }
+  }
 
   // Firebase Getting Method
 
- getUserData()async{
-
-   // Get Niktos
-   _DBref.child(_UAuth.currentUser!.uid)
-       .child("Niktos")
-       .onValue.listen((event) {
-     UNiktos = int.parse(event.snapshot.value.toString());
-         setState(() {
-
-         });
-   });
-   // Get Levels
-   _DBref.child(_UAuth.currentUser!.uid)
-       .child("Level")
-       .onValue.listen((event) {
-      Level = int.parse(event.snapshot.value.toString());
-     setState(() {
-
-     });
-   });
-   // Get Captcha
-   _DBref.child(_UAuth.currentUser!.uid)
-       .child("Captchas")
-       .onValue.listen((event) {
-     TCaptcha = int.parse(event.snapshot.value.toString());
-     setState(() {
-       if(TCaptcha <=0){
-         RndNo = "No More Captcha.";
-         Adbtn = true;
-         captchaWriter = false;
-         validatebtn = false;
-       }else{
-         RndNo = rnd.nextInt(1000000,)+1;
-         Adbtn = false;
-         captchaWriter = true;
-         validatebtn = true;
-
-       }
-     });
-   });
-
- }
-
-
- RndGeneratorMethod()
- {
-   RndNo = rnd.nextInt(1000000,)+1;
-   setState(() {
-
-   });
-
- }
-
-  schek(){
-
-    _DBref.child(_UAuth.currentUser!.uid).update({
-
-      "T_CP" : ServerValue.increment(1)
+  getUserData() async {
+    // Get Niktos
+    _DBref.child(_UAuth.currentUser!.uid)
+        .child("Niktos")
+        .onValue
+        .listen((event) {
+      UNiktos = int.parse(event.snapshot.value.toString());
+      setState(() {});
     });
-
+    // Get Levels
+    _DBref.child(_UAuth.currentUser!.uid)
+        .child("Level")
+        .onValue
+        .listen((event) {
+      Level = int.parse(event.snapshot.value.toString());
+      setState(() {});
+    });
+    // Get Captcha
+    _DBref.child(_UAuth.currentUser!.uid)
+        .child("Captchas")
+        .onValue
+        .listen((event) {
+      TCaptcha = int.parse(event.snapshot.value.toString());
+      setState(() {
+        if (TCaptcha <= 0) {
+          RndNo = "No More Captcha.";
+          Adbtn = true;
+          captchaWriter = false;
+          validatebtn = false;
+        } else {
+          RndNo = rnd.nextInt(
+                1000000,
+              ) +
+              1;
+          Adbtn = false;
+          captchaWriter = true;
+          validatebtn = true;
+        }
+      });
+    });
   }
+
+  RndGeneratorMethod() {
+    RndNo = rnd.nextInt(
+          1000000,
+        ) +
+        1;
+    setState(() {});
+  }
+
+  schek() {
+    _DBref.child(_UAuth.currentUser!.uid)
+        .update({"T_CP": ServerValue.increment(1)});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -286,10 +263,7 @@ class _CaptchaState extends State<Captcha> {
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomLeft,
-              colors: [Colors.green.shade700,Colors.green.shade200]
-
-          )
-      ),
+              colors: [Colors.green.shade700, Colors.green.shade200])),
       child: Scaffold(
         bottomNavigationBar:  MaxAdView(
           adUnitId:_ad_unit_id,
@@ -310,221 +284,273 @@ class _CaptchaState extends State<Captcha> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.green[700],
-          title: Row(children: [Icon(Icons.adb_rounded),SizedBox(width: MediaQuery.of(context).size.width *.02,),const Text("Captchas")],),
+          title: Row(
+            children: [
+              Icon(Icons.adb_rounded),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .02,
+              ),
+              const Text("Captchas")
+            ],
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-
-
-              SizedBox(height: MediaQuery.of(context).size.height * .06,),
-
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .06,
+              ),
               Center(
                 child: Container(
-
-                  height: MediaQuery.of(context).size.height *0.15,
-                  width: MediaQuery.of(context).size.width *0.9,
-
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.black38),
-
-                  child:
-
-                  Row(
-
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment:CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset("assets/images/coin.png",height: 30,width: 30,),
-                          const   SizedBox(height: 5,),
-                          const  Text("Niktos",style: TextStyle(color: Colors.white),),
-
-                          Text("$UNiktos",style: TextStyle(color: Colors.yellowAccent)),
-
+                          Image.asset(
+                            "assets/images/coin.png",
+                            height: 30,
+                            width: 30,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          const Text(
+                            "Niktos",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Text("$UNiktos",
+                              style: TextStyle(color: Colors.yellowAccent)),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset("assets/images/captcha.png",height: 35,width: 35,),
-                          const   Text("Captcha",style: TextStyle(color: Colors.white)),
-                          Text("$TCaptcha",style: TextStyle(color: Colors.yellow)),
+                          Image.asset(
+                            "assets/images/captcha.png",
+                            height: 35,
+                            width: 35,
+                          ),
+                          const Text("Captcha",
+                              style: TextStyle(color: Colors.white)),
+                          Text("$TCaptcha",
+                              style: TextStyle(color: Colors.yellow)),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset("assets/images/rank.png",height: 30,width: 30,),
-                          const   SizedBox(height: 2,),
-
-
-                          Text("Level",style: TextStyle(color: Colors.white)),
-
-                          Text("$Level",style: TextStyle(color: Colors.yellowAccent)),
+                          Image.asset(
+                            "assets/images/rank.png",
+                            height: 30,
+                            width: 30,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Text("Level", style: TextStyle(color: Colors.white)),
+                          Text("$Level",
+                              style: TextStyle(color: Colors.yellowAccent)),
                         ],
                       ),
-
                     ],
-
                   ),
-
                 ),
               ),
-
-              SizedBox(height: MediaQuery.of(context).size.height * .025,),
-
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .025,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
-                   const Center(child: Padding(
+                    const Center(
+                        child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: Text("Write the Captcha you see on the screen.",style: TextStyle(color: Colors.black),),
+                      child: Text(
+                        "Write the Captcha you see on the screen.",
+                        style: TextStyle(color: Colors.black),
+                      ),
                     )),
-
-
                     Material(
                       color: Colors.transparent,
-                      elevation:20,
+                      elevation: 20,
                       child: Container(
-                        height:  MediaQuery.of(context).size.height * .13,
-                        width:  MediaQuery.of(context).size.width * .81,
-
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16)
-                     
-                      ),
-                        child:  Center(child: Text("$RndNo",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold),)),
-
+                        height: MediaQuery.of(context).size.height * .13,
+                        width: MediaQuery.of(context).size.width * .81,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16)),
+                        child: Center(
+                            child: Text(
+                          "$RndNo",
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        )),
                       ),
                     ),
-
-                    SizedBox(height: MediaQuery.of(context).size.height * .03,),
-
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .03,
+                    ),
                     Visibility(
                       visible: captchaWriter,
                       child: Form(
                         key: _formKey,
-
                         child: TextFormField(
                           keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if(value!.isEmpty){
-                            return ("Wrong Entry");
-                          }
-                        },
-
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return ("Wrong Entry");
+                            }
+                          },
                           controller: _validatorController,
                           decoration: InputDecoration(
-                            fillColor: Colors.grey.shade100,
+                              fillColor: Colors.grey.shade100,
                               filled: true,
-                             hintText: "Type Captcha...",
+                              hintText: "Type Captcha...",
                               suffixIcon: InkWell(
-                                  onTap: (){
+                                  onTap: () {
                                     _validatorController.clear();
                                   },
                                   child: Icon(Icons.clear_outlined)),
                               border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-
-
-                            )
-                          ),
+                                borderRadius: BorderRadius.circular(12),
+                              )),
                         ),
                       ),
                     ),
-
-                    SizedBox(height: MediaQuery.of(context).size.height * .03,),
-
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .03,
+                    ),
                     InkWell(
-                      onTap: (){
-                        var UserCaptcha = _validatorController.text.toString();
-                        if(_formKey.currentState!.validate() && UserCaptcha == RndNo.toString() ){
-                          initializeInterstitialAds();
+                        onTap: () {
+                          if (UNiktos >= 1000) {
+                            ERNLMT();
+                          } else {
+                            var UserCaptcha =
+                                _validatorController.text.toString();
+                            if (_formKey.currentState!.validate() &&
+                                UserCaptcha == RndNo.toString()) {
+                         initializeInterstitialAds();
                           if (INTisReady) {
                             AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
                           }
-                          Utils().message("You Won 10 Coins");
-                          schek();
+                              Utils().message("You Won 4 Coins");
+                              schek();
 
-
-                        setState(() {
-                          RndGeneratorMethod();
-                          updateUserData();
-                        });
-                        }else{
-                          Utils().message("Wrong Captcha");
-
-                        }
-
-                      },
-                      child: Visibility(
-                        visible: validatebtn,
-                        child: Container(
-                           height:  MediaQuery.of(context).size.height * .06,
-                            width:  MediaQuery.of(context).size.width * .51,
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(15),
-                             color: Colors.amber,
-                           ),
-
-                           child: const Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-
-                              Icon(Icons.check_circle),
-                              Text("Validate",style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),
-                            ],
+                              setState(() {
+                                RndGeneratorMethod();
+                                updateUserData();
+                              });
+                            } else {
+                              Utils().message("Wrong Captcha");
+                            }
+                          }
+                        },
+                        child: Visibility(
+                          visible: validatebtn,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * .06,
+                            width: MediaQuery.of(context).size.width * .51,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: Colors.amber,
+                            ),
+                            child: const Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(Icons.check_circle),
+                                Text(
+                                  "Validate",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
+                        )),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.02,
                     ),
-                      )
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height *0.02,),
                     Visibility(
                       visible: Adbtn,
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black38
-                          ),
-                          onPressed: (){
-                            AdRewardinCaptcha();
+                              backgroundColor: Colors.black38),
+                          onPressed: () {
+                            if (UNiktos >= 1000) {
+                              ERNLMT();
+                            } else {
+                              AdRewardinCaptcha();
+                            }
                           },
-                          child:
-
-                          Container(
+                          child: Container(
                             height: 30,
-                            width: MediaQuery.of(context).size.width *0.5,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("More Captcha",style: TextStyle(color: Colors.white,fontSize: 20),),
-                                Image.asset("assets/images/WatchAds.png",)
+                                Text(
+                                  "More Captcha",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
+                                Image.asset(
+                                  "assets/images/WatchAds.png",
+                                )
                               ],
                             ),
-                          )
-                      ),
+                          )),
                     ),
                   ],
                 ),
               )
-
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> ERNLMT() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Center(child: Text("Limit Exccessed")),
+          content: Text(
+              "You are Level 1 User. So Level 1 User Cannot send withdraw of more than 1000 Coins. Keep Earning Daily and Increase your Level and Earn More Money."),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10),
+              child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Close",
+                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
+                  )),
+            )
+          ],
+        );
+      },
     );
   }
 }
