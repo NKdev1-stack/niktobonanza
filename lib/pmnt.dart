@@ -163,7 +163,11 @@ class _PMNTState extends State<PMNT> {
                           onpress: () {
                             setState(() {
                               cashLevel = "\$ 0.01";
-                              money = "0.01";
+                              if (satoshi >= 800 && satoshi < 1000) {
+                                money = "0.01";
+                              } else {
+                                Utils().message("Minimum 800 Coins Required");
+                              }
                             });
                           },
                           title: "\$ 0.01",
@@ -177,7 +181,11 @@ class _PMNTState extends State<PMNT> {
                           onpress: () {
                             setState(() {
                               cashLevel = "\$ 0.05";
-                              money = "0.05";
+                              if (satoshi >= 2000 && satoshi < 2500) {
+                                money = "0.05";
+                              } else {
+                                Utils().message("Minimum 1800 Coins Required");
+                              }
                             });
                           },
                           title: "\$ 0.05",
@@ -196,7 +204,11 @@ class _PMNTState extends State<PMNT> {
                           onpress: () {
                             setState(() {
                               cashLevel = "\$ 0.5";
-                              money = "0.5";
+                              if (satoshi >= 5000 && satoshi < 7000) {
+                                money = "0.5";
+                              } else {
+                                Utils().message("Minimum 8000 Coins Required");
+                              }
                             });
                           },
                           title: "\$ 0.5",
@@ -210,7 +222,12 @@ class _PMNTState extends State<PMNT> {
                           onpress: () {
                             setState(() {
                               cashLevel = "\$ 1.00";
-                              money = "1.00";
+                              if (satoshi >= 8000) {
+                                money = "1.00";
+                              } else {
+                                Utils()
+                                    .message("Minimum 10,000 Coins Required");
+                              }
                             });
                           },
                           title: "\$ 1.00",

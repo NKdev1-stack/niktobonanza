@@ -1144,7 +1144,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
               "Perform Different Tasks, Play Games and Collect Satoshis once you reached "
               "the Minimum Threshold which is 800 Satoshi than choose the wallet and submit Withdrawal Request."
               "Once System Received your Withdrawal Request than After Completing Security Checkup "
-              "We will release your payouts instantly. "
+              "We will release your payouts instantly."
               "Keep In Mind. Use Correct Coinbase,Binance,Paypal and Faucet Email for Withdrawal Otherwise we are not responsible if you don't receive your money."
               "\nContact with Support Team via Twitter or Instagram for instant help."),
           actions: [
