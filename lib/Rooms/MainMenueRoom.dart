@@ -1,16 +1,14 @@
 import 'dart:math';
-import 'dart:math';
 import 'package:android_intent/android_intent.dart';
 import 'package:applovin_max/applovin_max.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:niktobonanza/BanksRooms/Binance.dart';
-import 'package:niktobonanza/BanksRooms/Coinbase.dart';
 import 'package:niktobonanza/Rooms/CaptchaRooms.dart';
 import 'package:niktobonanza/Rooms/GuessGame.dart';
 import 'package:niktobonanza/Rooms/QuizRoom.dart';
 import 'package:niktobonanza/Rooms/ScratchRoom.dart';
+import 'package:niktobonanza/pmnt.dart';
 
 import '../utils/Toast.dart';
 import 'DiceRoom.dart';
@@ -32,172 +30,155 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
   var PosterDec2 = "";
   var PosterLink1 = "";
   var PosterLink2 = "";
-  var wth = 0;
   var visit = "";
+
+  //StatusEnd
 
   final _authID = FirebaseAuth.instance;
   final _DBref = FirebaseDatabase.instance.ref("Workers");
   final _ADref = FirebaseDatabase.instance.ref("Admin");
-final String _interstitial_ad_unit_id = "6520fe898d527766";
-final String _interestitial_click_unit = "390881b42411d57f";
+  final String _interstitial_ad_unit_id = "6520fe898d527766";
+  final String _interestitial_click_unit = "390881b42411d57f";
 
-    final String _rewarded_ad_unit_id =  "508e2a6446c03e82";
+  final String _rewarded_ad_unit_id = "508e2a6446c03e82";
 
-    var _interstitialRetryAttempt = 0;
-    var _rewardedAdRetryAttempt = 0;
+  var _interstitialRetryAttempt = 0;
+  var _rewardedAdRetryAttempt = 0;
 
-    bool INTisReady = true;
-    bool  RWDisReady = true;
-    
+  bool INTisReady = true;
+  bool RWDisReady = true;
 
-     // Int Ad
-    initializeInterstitialAds() async{
-      INTisReady = (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
+  // Int Ad
+  initializeInterstitialAds() async {
+    INTisReady =
+        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
 
-      AppLovinMAX.setInterstitialListener(InterstitialListener(
-        onAdLoadedCallback: (ad) {
-          // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
+    AppLovinMAX.setInterstitialListener(InterstitialListener(
+      onAdLoadedCallback: (ad) {
+        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
 
-          // Reset retry attempt
-          _interstitialRetryAttempt = 0;
-        },
-        onAdLoadFailedCallback: (adUnitId, error) {
-          // Interstitial ad failed to load
-          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-          _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
+        // Reset retry attempt
+        _interstitialRetryAttempt = 0;
+      },
+      onAdLoadFailedCallback: (adUnitId, error) {
+        // Interstitial ad failed to load
+        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
 
-          int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
+        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
 
-          print('Interstitial ad failed to load with code ' + error.code.toString() + ' - retrying in ' + retryDelay.toString() + 's');
+        print('Interstitial ad failed to load with code ' +
+            error.code.toString() +
+            ' - retrying in ' +
+            retryDelay.toString() +
+            's');
 
-          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-            AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-          });
-        },
-        onAdDisplayedCallback: (ad) {
-
-          _DBref.child(_authID.currentUser!.uid)
-              .update({
-
-            "I_ID" : ServerValue.increment(1),
-            "Niktos" : ServerValue.increment(5),
-          });
-
-        },
-        onAdDisplayFailedCallback: (ad, error) {
+        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
           AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-          Utils().message("Please Wait! Or try Again After Some Time");
+        });
+      },
+      onAdDisplayedCallback: (ad) {
+        _DBref.child(_authID.currentUser!.uid).update({
+          "I_ID": ServerValue.increment(1),
+          "Niktos": ServerValue.increment(5),
+        });
+      },
+      onAdDisplayFailedCallback: (ad, error) {
+        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+        Utils().message("Please Wait! Or try Again After Some Time");
+      },
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {},
+    ));
 
-        },
-        onAdClickedCallback: (ad) {
+    // Load the first interstitial
+    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+  }
 
-        },
-        onAdHiddenCallback: (ad) {
+  // ClickAd
+  initializeClickInterstitialAds() async {
+    INTisReady =
+        (await AppLovinMAX.isInterstitialReady(_interestitial_click_unit))!;
 
-        },
-      ));
+    AppLovinMAX.setInterstitialListener(InterstitialListener(
+      onAdLoadedCallback: (ad) {
+        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
 
-      // Load the first interstitial
-      AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-    }
+        // Reset retry attempt
+        _interstitialRetryAttempt = 0;
+      },
+      onAdLoadFailedCallback: (adUnitId, error) {
+        // Interstitial ad failed to load
+        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
 
+        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
 
-      // ClickAd
-    initializeClickInterstitialAds() async{
-      INTisReady = (await AppLovinMAX.isInterstitialReady(_interestitial_click_unit))!;
+        print('Interstitial ad failed to load with code ' +
+            error.code.toString() +
+            ' - retrying in ' +
+            retryDelay.toString() +
+            's');
 
-      AppLovinMAX.setInterstitialListener(InterstitialListener(
+        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+          AppLovinMAX.loadInterstitial(_interestitial_click_unit);
+        });
+      },
+      onAdDisplayedCallback: (ad) {
+        _DBref.child(_authID.currentUser!.uid).update({
+          "I_ID": ServerValue.increment(1),
+        });
+      },
+      onAdDisplayFailedCallback: (ad, error) {
+        AppLovinMAX.loadInterstitial(_interestitial_click_unit);
+      },
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {},
+    ));
+
+    // Load the first interstitial
+    AppLovinMAX.loadInterstitial(_interestitial_click_unit);
+  }
+
+  // Reward Ad
+  void initializeRewardedAds() async {
+    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
+
+    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+
+    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
         onAdLoadedCallback: (ad) {
-          // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
+          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
 
           // Reset retry attempt
-          _interstitialRetryAttempt = 0;
+          _rewardedAdRetryAttempt = 0;
         },
         onAdLoadFailedCallback: (adUnitId, error) {
-          // Interstitial ad failed to load
+          // Rewarded ad failed to load
           // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-          _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
+          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
 
-          int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
-
-          print('Interstitial ad failed to load with code ' + error.code.toString() + ' - retrying in ' + retryDelay.toString() + 's');
+          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
+          print('Rewarded ad failed to load with code ' +
+              error.code.toString() +
+              ' - retrying in ' +
+              retryDelay.toString() +
+              's');
 
           Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-            AppLovinMAX.loadInterstitial(_interestitial_click_unit);
+            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
           });
         },
         onAdDisplayedCallback: (ad) {
-
-          _DBref.child(_authID.currentUser!.uid)
-              .update({
-
-            "I_ID" : ServerValue.increment(1),
-            
-          });
-
+          Utils().message("Watch Ad to Get More Chance");
         },
         onAdDisplayFailedCallback: (ad, error) {
-          AppLovinMAX.loadInterstitial(_interestitial_click_unit);
-
+          Utils().message("Please Wait! Or try Again After Some Time");
         },
-        onAdClickedCallback: (ad) {
-
-        },
-        onAdHiddenCallback: (ad) {
-
-        },
-      ));
-
-      // Load the first interstitial
-      AppLovinMAX.loadInterstitial(_interestitial_click_unit);
-    }
-
-
- 
-    // Reward Ad
-    void initializeRewardedAds()async {
-      RWDisReady =  (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
-
-      AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-
-      AppLovinMAX.setRewardedAdListener(
-          RewardedAdListener(onAdLoadedCallback: (ad) {
-            // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
-
-            // Reset retry attempt
-            _rewardedAdRetryAttempt = 0;
-          },
-              onAdLoadFailedCallback: (adUnitId, error) {
-                // Rewarded ad failed to load
-                // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-                _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
-
-                int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-                print('Rewarded ad failed to load with code ' +
-                    error.code.toString() + ' - retrying in ' +
-                    retryDelay.toString() + 's');
-
-                Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-                  AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-                });
-              },
-              onAdDisplayedCallback: (ad) {
-
-                Utils().message("Watch Ad to Get More Chance");
-              },
-              onAdDisplayFailedCallback: (ad, error) {
-                Utils().message("Please Wait! Or try Again After Some Time");
-
-              },
-              onAdClickedCallback: (ad) {
-
-              },
-              onAdHiddenCallback: (ad) {
-
-              },
-              onAdReceivedRewardCallback: (ad, reward) {
-
-                //// Reward Ad
+        onAdClickedCallback: (ad) {},
+        onAdHiddenCallback: (ad) {},
+        onAdReceivedRewardCallback: (ad, reward) {
+          //// Reward Ad
 //  Giving More Chances
           _DBref.child(_authID.currentUser!.uid).update({
             'Niktos': ServerValue.increment(5),
@@ -206,29 +187,16 @@ final String _interestitial_click_unit = "390881b42411d57f";
           _DBref.child(_authID.currentUser!.uid).update({
             'R_ID': ServerValue.increment(1),
           });
-              }));
-    }
-
-
-  
+        }));
+  }
 
   @override
   void initState() {
-    _DBref.child(_authID.currentUser!.uid).update({"AppVersion": "1.50.0"});
-   initializeInterstitialAds();
-   initializeRewardedAds();
+    _DBref.child(_authID.currentUser!.uid).update({"AppVersion": "1.54.0"});
+    initializeInterstitialAds();
+    initializeRewardedAds();
     Getdata();
-  initializeClickInterstitialAds();
-    // Earning Limit Setter.
-
-    _DBref.child(_authID.currentUser!.uid)
-        .child("WithdrawCode")
-        .onValue
-        .listen((event) {
-      setState(() {
-        wth = int.parse(event.snapshot.value.toString());
-      });
-    });
+    initializeClickInterstitialAds();
 
     super.initState();
   }
@@ -351,16 +319,15 @@ final String _interestitial_click_unit = "390881b42411d57f";
         return false;
       },
       child: Scaffold(
-      
         appBar: AppBar(
           actions: [
             InkWell(
                 onTap: () {
-                 initializeClickInterstitialAds();
-                 
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interestitial_click_unit);
-                        }
+                  initializeClickInterstitialAds();
+
+                  if (INTisReady) {
+                    AppLovinMAX.showInterstitial(_interestitial_click_unit);
+                  }
                   Info();
                 },
                 child: const Icon(
@@ -371,12 +338,12 @@ final String _interestitial_click_unit = "390881b42411d57f";
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: InkWell(
                 onTap: () {
-               initializeInterstitialAds();
-                  if (wth == 0) {
-                    WithdrawRoom();
-                  } else {
-                    WithdrawNote();
-                  }
+                  initializeInterstitialAds();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PMNT(),
+                      ));
                 },
                 child: const Icon(
                   (Icons.account_balance_wallet_rounded),
@@ -389,7 +356,7 @@ final String _interestitial_click_unit = "390881b42411d57f";
           automaticallyImplyLeading: false,
           backgroundColor: Colors.grey.shade800,
           title: Text(
-            "NiktoCash",
+            "BitEarn",
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -422,7 +389,7 @@ final String _interestitial_click_unit = "390881b42411d57f";
                       child: CircleAvatar(
                         maxRadius: 28,
                         backgroundImage: NetworkImage(
-                            "https://cdn-icons-png.flaticon.com/512/236/236832.png"),
+                            "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000"),
                       ),
                     ),
                     Padding(
@@ -451,11 +418,6 @@ final String _interestitial_click_unit = "390881b42411d57f";
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22),
                                 ),
-                                Icon(
-                                  Icons.star,
-                                  size: 10,
-                                  color: Colors.white,
-                                )
                               ],
                             ),
                           ),
@@ -466,7 +428,7 @@ final String _interestitial_click_unit = "390881b42411d57f";
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "Niktos: ",
+                                  "Satoshi: ",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -478,29 +440,6 @@ final String _interestitial_click_unit = "390881b42411d57f";
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  "Level: ",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                                Text(
-                                  "$ULevel",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
                                 ),
                               ],
                             ),
@@ -729,23 +668,16 @@ final String _interestitial_click_unit = "390881b42411d57f";
                         children: [
                           InkWell(
                             onTap: () {
-                        
-                         initializeInterstitialAds();
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-                        }
-                              if (wth == 0) {
-                                if (UNiktos >= 1000) {
-                                  ERNLMT();
-                                } else {
-                               initializeInterstitialAds();
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-                        } 
-                               
-                                }
-                              } else {
-                                WithdrawNote();
+                              initializeInterstitialAds();
+                              if (INTisReady) {
+                                AppLovinMAX.showInterstitial(
+                                    _interstitial_ad_unit_id);
+                              }
+
+                              initializeInterstitialAds();
+                              if (INTisReady) {
+                                AppLovinMAX.showInterstitial(
+                                    _interstitial_ad_unit_id);
                               }
                             },
                             child: Material(
@@ -784,24 +716,17 @@ final String _interestitial_click_unit = "390881b42411d57f";
                           ),
                           InkWell(
                             onTap: () {
-                           initializeClickInterstitialAds();
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interestitial_click_unit);
-                        } 
-                              if (wth == 0) {
-                                if (UNiktos >= 1000) {
-                                  ERNLMT();
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ScratchRoom(),
-                                      ));
-                                }
-                              } else {
-                                WithdrawNote();
+                              initializeClickInterstitialAds();
+                              if (INTisReady) {
+                                AppLovinMAX.showInterstitial(
+                                    _interestitial_click_unit);
                               }
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ScratchRoom(),
+                                  ));
                             },
                             child: Material(
                               color: Colors.transparent,
@@ -839,23 +764,16 @@ final String _interestitial_click_unit = "390881b42411d57f";
                           ),
                           InkWell(
                             onTap: () {
-                                   initializeClickInterstitialAds();
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interestitial_click_unit);
-                        } 
-                              if (wth == 0) {
-                                if (UNiktos >= 1000) {
-                                  ERNLMT();
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const Captcha(),
-                                      ));
-                                }
-                              } else {
-                                WithdrawNote();
+                              initializeClickInterstitialAds();
+                              if (INTisReady) {
+                                AppLovinMAX.showInterstitial(
+                                    _interestitial_click_unit);
                               }
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const Captcha()));
                             },
                             child: Material(
                               color: Colors.transparent,
@@ -867,7 +785,7 @@ final String _interestitial_click_unit = "390881b42411d57f";
                                 decoration: BoxDecoration(
                                     color: Colors.green.shade700,
                                     borderRadius: BorderRadius.circular(15)),
-                                child: Column(
+                                child: const Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
@@ -894,7 +812,7 @@ final String _interestitial_click_unit = "390881b42411d57f";
                   ),
 
                   //Menu 2 Easy to earn
-                  Padding(
+                  const Padding(
                     padding:
                         const EdgeInsets.only(left: 12.0, right: 12, top: 20),
                     child: Text(
@@ -903,7 +821,7 @@ final String _interestitial_click_unit = "390881b42411d57f";
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  Divider(
+                  const Divider(
                     thickness: 0.9,
                     endIndent: 1,
                   ),
@@ -917,17 +835,10 @@ final String _interestitial_click_unit = "390881b42411d57f";
                         children: [
                           InkWell(
                             onTap: () {
-                              if (wth == 0) {
-                                if (UNiktos >= 1000) {
-                                  ERNLMT();
-                                } else {
-                                 initializeRewardedAds();
-                        if (RWDisReady) {
-                          AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-                        }
-                                }
-                              } else {
-                                WithdrawNote();
+                              initializeRewardedAds();
+                              if (RWDisReady) {
+                                AppLovinMAX.showRewardedAd(
+                                    _rewarded_ad_unit_id);
                               }
                             },
                             child: Material(
@@ -966,24 +877,17 @@ final String _interestitial_click_unit = "390881b42411d57f";
                           ),
                           InkWell(
                             onTap: () {
-
-                             initializeClickInterstitialAds();
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interestitial_click_unit);
-                        } 
-                              if (wth == 0) {
-                                if (UNiktos >= 1000) {
-                                  ERNLMT();
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const Dicer(),
-                                      ));
-                                }
-                              } else {
-                                WithdrawNote();
+                              initializeClickInterstitialAds();
+                              if (INTisReady) {
+                                AppLovinMAX.showInterstitial(
+                                    _interestitial_click_unit);
                               }
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Dicer(),
+                                  ));
                             },
                             child: Material(
                               color: Colors.transparent,
@@ -1021,23 +925,17 @@ final String _interestitial_click_unit = "390881b42411d57f";
                           ),
                           InkWell(
                             onTap: () {
-                            initializeClickInterstitialAds();
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interestitial_click_unit);
-                        }   
-                              if (wth == 0) {
-                                if (UNiktos >= 1000) {
-                                  ERNLMT();
-                                } else {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => const GuessRoom(),
-                                      ));
-                                }
-                              } else {
-                                WithdrawNote();
+                              initializeClickInterstitialAds();
+                              if (INTisReady) {
+                                AppLovinMAX.showInterstitial(
+                                    _interestitial_click_unit);
                               }
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const GuessRoom(),
+                                  ));
                             },
                             child: Material(
                               color: Colors.transparent,
@@ -1113,24 +1011,17 @@ final String _interestitial_click_unit = "390881b42411d57f";
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                   initializeClickInterstitialAds();
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(_interestitial_click_unit);
-                        } 
-                                      if (wth == 0) {
-                                        if (UNiktos >= 1000) {
-                                          ERNLMT();
-                                        } else {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    QuizRoom(),
-                                              ));
-                                        }
-                                      } else {
-                                        WithdrawNote();
+                                      initializeClickInterstitialAds();
+                                      if (INTisReady) {
+                                        AppLovinMAX.showInterstitial(
+                                            _interestitial_click_unit);
                                       }
+
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => QuizRoom(),
+                                          ));
                                     },
                                     child: CircleAvatar(
                                       backgroundColor: Colors.white70,
@@ -1177,11 +1068,11 @@ final String _interestitial_click_unit = "390881b42411d57f";
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage: NetworkImage(
-                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1687521088/crazy_nkztuz.png"),
+                                          "https://seeklogo.com/images/I/instagram-logo-E0067A1403-seeklogo.com.png"),
                                     ),
                                   ),
                                   Text(
-                                    "Visit Us",
+                                    "Instagram",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16),
                                   )
@@ -1210,8 +1101,7 @@ final String _interestitial_click_unit = "390881b42411d57f";
                                     onTap: () {
                                       AndroidIntent intent = AndroidIntent(
                                         action: 'android.intent.action.VIEW',
-                                        data:
-                                            "https://forms.gle/fHTTzR5VxZg5Tjsv7",
+                                        data: "https://twitter.com/NKDev58",
                                       );
                                       intent.launch();
                                     },
@@ -1219,11 +1109,11 @@ final String _interestitial_click_unit = "390881b42411d57f";
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage: NetworkImage(
-                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1685627407/icons8-emergency-96_wm2nzl.png"),
+                                          "https://static.dezeen.com/uploads/2023/07/x-logo-twitter-elon-musk_dezeen_2364_col_0.jpg"),
                                     ),
                                   ),
                                   Text(
-                                    "Contact Us",
+                                    "Twitter",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16),
                                   )
@@ -1251,166 +1141,12 @@ final String _interestitial_click_unit = "390881b42411d57f";
         return AlertDialog(
           title: Center(child: Text("How To Use")),
           content: Text(
-              "Perform Different Tasks, Play Games and Collect Coins once you reached "
-              "the Minimum Threshold which is 1000 Coins than choose the wallet and submit Withdrawal Request."
+              "Perform Different Tasks, Play Games and Collect Satoshis once you reached "
+              "the Minimum Threshold which is 800 Satoshi than choose the wallet and submit Withdrawal Request."
               "Once System Received your Withdrawal Request than After Completing Security Checkup "
               "We will release your payouts instantly. "
-              "Keep In Mind. Use Correct Coinbase,Binance Email account for Withdrawal Otherwise we are not responsible if you don't receive your money."),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10),
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "Close",
-                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
-                  )),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> WithdrawNote() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text("Please Wait!")),
-          content: Text(
-              "You Already Have a Pending Withdraw. Withdraw Usually Takes 4 hours but some time it takes more time so please stay with us. Thanks! "),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10),
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "Close",
-                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
-                  )),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> WithdrawRoom() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text("Choose Wallet!")),
-          content: Container(
-              height: MediaQuery.of(context).size.height * 0.25,
-              child: Column(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CoinbaseB(),
-                          ));
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: Center(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.candlestick_chart,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          Text(
-                            "Coinbase",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      )),
-                      decoration: BoxDecoration(
-                          color: Colors.blueAccent.shade700.withRed(12),
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.03,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Binance_W(),
-                          ));
-                    },
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      width: MediaQuery.of(context).size.width * 0.7,
-                      child: Center(
-                          child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(
-                            Icons.cable,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          Text(
-                            "Binance",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      )),
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade900,
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  )
-                ],
-              )),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 5),
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "Close",
-                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
-                  )),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> ERNLMT() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text("Limit Exccessed")),
-          content: Text(
-              "You are Level 1 User. So Level 1 User Cannot send withdraw of more than 1000 Coins. Keep Earning Daily and Increase your Level and Earn More Money."),
+              "Keep In Mind. Use Correct Coinbase,Binance,Paypal and Faucet Email for Withdrawal Otherwise we are not responsible if you don't receive your money."
+              "\nContact with Support Team via Twitter or Instagram for instant help."),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 10, bottom: 10),
