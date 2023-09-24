@@ -32,134 +32,114 @@ class _CaptchaState extends State<Captcha> {
   bool Adbtn = false;
   bool captchaWriter = true;
   final String _interstitial_ad_unit_id = "450bc990d365b2fb";
- final String _rewarded_ad_unit_id =  "2eda4b8d0c86c6fc";
+  final String _rewarded_ad_unit_id = "2eda4b8d0c86c6fc";
 
- var _interstitialRetryAttempt = 0;
- var _rewardedAdRetryAttempt = 0;
+  var _interstitialRetryAttempt = 0;
+  var _rewardedAdRetryAttempt = 0;
 
- bool INTisReady = true;
- bool  RWDisReady = true;
- final String _ad_unit_id = "45a079225c19874b";
-
+  bool INTisReady = true;
+  bool RWDisReady = true;
+  final String _ad_unit_id = "45a079225c19874b";
 
 // / Int Ad
- initializeInterstitialAds() async{
-   INTisReady = (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
+  initializeInterstitialAds() async {
+    INTisReady =
+        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
 
-   AppLovinMAX.setInterstitialListener(InterstitialListener(
-     onAdLoadedCallback: (ad) {
-       // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
+    AppLovinMAX.setInterstitialListener(InterstitialListener(
+      onAdLoadedCallback: (ad) {
+        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
 
-       // Reset retry attempt
-       _interstitialRetryAttempt = 0;
-     },
-     onAdLoadFailedCallback: (adUnitId, error) {
-       // Interstitial ad failed to load
-       // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-       _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
+        // Reset retry attempt
+        _interstitialRetryAttempt = 0;
+      },
+      onAdLoadFailedCallback: (adUnitId, error) {
+        // Interstitial ad failed to load
+        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
 
-       int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
+        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
 
-       print('Interstitial ad failed to load with code ' + error.code.toString() + ' - retrying in ' + retryDelay.toString() + 's');
+        print('Interstitial ad failed to load with code ' +
+            error.code.toString() +
+            ' - retrying in ' +
+            retryDelay.toString() +
+            's');
 
-       Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-         AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-       });
-     },
-     onAdDisplayedCallback: (ad) {
+        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+          AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+        });
+      },
+      onAdDisplayedCallback: (ad) {
+        _DBref.child(_UAuth.currentUser!.uid).update({
+          "I_ID": ServerValue.increment(1),
+        });
+      },
+      onAdDisplayFailedCallback: (ad, error) {
+        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+      },
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {},
+    ));
 
-       _DBref.child(_UAuth.currentUser!.uid)
-           .update({
-
-         "I_ID" : ServerValue.increment(1),
-       });
-
-     },
-     onAdDisplayFailedCallback: (ad, error) {
-       AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-     },
-     onAdClickedCallback: (ad) {
-
-     },
-     onAdHiddenCallback: (ad) {
-
-     },
-   ));
-
-   // Load the first interstitial
-   AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
- }
-
-
-
- 
+    // Load the first interstitial
+    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+  }
 
 // Reward Ad
 
-void initializeRewardedAds()async {
-   RWDisReady =  (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
+  void initializeRewardedAds() async {
+    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
 
-   AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
 
-   AppLovinMAX.setRewardedAdListener(
-       RewardedAdListener(onAdLoadedCallback: (ad) {
-         // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
+    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
+        onAdLoadedCallback: (ad) {
+          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
 
-         // Reset retry attempt
-         _rewardedAdRetryAttempt = 0;
-       },
-           onAdLoadFailedCallback: (adUnitId, error) {
-             // Rewarded ad failed to load
-             // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-             _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
+          // Reset retry attempt
+          _rewardedAdRetryAttempt = 0;
+        },
+        onAdLoadFailedCallback: (adUnitId, error) {
+          // Rewarded ad failed to load
+          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
 
-             int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-             print('Rewarded ad failed to load with code ' +
-                 error.code.toString() + ' - retrying in ' +
-                 retryDelay.toString() + 's');
+          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
+          print('Rewarded ad failed to load with code ' +
+              error.code.toString() +
+              ' - retrying in ' +
+              retryDelay.toString() +
+              's');
 
-             Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-               AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-             });
-           },
-           onAdDisplayedCallback: (ad) {
-
-             Utils().message("Watch Ad to Get More Chance");
-           },
-           onAdDisplayFailedCallback: (ad, error) {
-             Utils().message("Please Wait! Or try Again After Some Time");
-
-           },
-           onAdClickedCallback: (ad) {
-
-           },
-           onAdHiddenCallback: (ad) {
-
-           },
-           onAdReceivedRewardCallback: (ad, reward) {
-
-             // Giving More Chances
-             _DBref.child(_UAuth.currentUser!.uid)
-                 .update({
-
-               'Captchas': 5,
-
-             });
-             // Update RWD AD in DB
-             _DBref.child(_UAuth.currentUser!.uid)
-                 .update({
-
-               'R_ID': ServerValue.increment(1),
-
-             });
-           }));
- }
-
+          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+          });
+        },
+        onAdDisplayedCallback: (ad) {
+          Utils().message("Watch Ad to Get More Chance");
+        },
+        onAdDisplayFailedCallback: (ad, error) {
+          Utils().message("Please Wait! Or try Again After Some Time");
+        },
+        onAdClickedCallback: (ad) {},
+        onAdHiddenCallback: (ad) {},
+        onAdReceivedRewardCallback: (ad, reward) {
+          // Giving More Chances
+          _DBref.child(_UAuth.currentUser!.uid).update({
+            'Captchas': 5,
+          });
+          // Update RWD AD in DB
+          _DBref.child(_UAuth.currentUser!.uid).update({
+            'R_ID': ServerValue.increment(1),
+          });
+        }));
+  }
 
   @override
   void initState() {
- initializeRewardedAds();
-   initializeInterstitialAds();
+    initializeRewardedAds();
+    initializeInterstitialAds();
     RndGeneratorMethod();
     getUserData();
     super.initState();
@@ -187,11 +167,10 @@ void initializeRewardedAds()async {
   // AdReward
 
   AdRewardinCaptcha() {
-    
-  initializeRewardedAds();
-                          if (RWDisReady) {
-                            AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-                          }
+    initializeRewardedAds();
+    if (RWDisReady) {
+      AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
+    }
 
     if (TCaptcha >= 0) {
       // In this method we are using if else if captcha are greater than 0 all hidden widgets will show
@@ -265,20 +244,15 @@ void initializeRewardedAds()async {
               end: Alignment.bottomLeft,
               colors: [Colors.green.shade700, Colors.green.shade200])),
       child: Scaffold(
-        bottomNavigationBar:  MaxAdView(
-          adUnitId:_ad_unit_id,
+        bottomNavigationBar: MaxAdView(
+          adUnitId: _ad_unit_id,
           adFormat: AdFormat.banner,
-          listener: AdViewAdListener(onAdLoadedCallback: (ad) {
-
-          }, onAdLoadFailedCallback: (adUnitId, error) {
-
-          }, onAdClickedCallback: (ad) {
-
-          }, onAdExpandedCallback: (ad) {
-
-          }, onAdCollapsedCallback: (ad) {
-
-          }),
+          listener: AdViewAdListener(
+              onAdLoadedCallback: (ad) {},
+              onAdLoadFailedCallback: (adUnitId, error) {},
+              onAdClickedCallback: (ad) {},
+              onAdExpandedCallback: (ad) {},
+              onAdCollapsedCallback: (ad) {}),
         ),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -436,27 +410,24 @@ void initializeRewardedAds()async {
                     ),
                     InkWell(
                         onTap: () {
-                          if (UNiktos >= 1000) {
-                            ERNLMT();
-                          } else {
-                            var UserCaptcha =
-                                _validatorController.text.toString();
-                            if (_formKey.currentState!.validate() &&
-                                UserCaptcha == RndNo.toString()) {
-                         initializeInterstitialAds();
-                          if (INTisReady) {
-                            AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-                          }
-                              Utils().message("You Won 4 Coins");
-                              schek();
-
-                              setState(() {
-                                RndGeneratorMethod();
-                                updateUserData();
-                              });
-                            } else {
-                              Utils().message("Wrong Captcha");
+                          var UserCaptcha =
+                              _validatorController.text.toString();
+                          if (_formKey.currentState!.validate() &&
+                              UserCaptcha == RndNo.toString()) {
+                            initializeInterstitialAds();
+                            if (INTisReady) {
+                              AppLovinMAX.showInterstitial(
+                                  _interstitial_ad_unit_id);
                             }
+                            Utils().message("You Won 4 Coins");
+                            schek();
+
+                            setState(() {
+                              RndGeneratorMethod();
+                              updateUserData();
+                            });
+                          } else {
+                            Utils().message("Wrong Captcha");
                           }
                         },
                         child: Visibility(
@@ -493,11 +464,7 @@ void initializeRewardedAds()async {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black38),
                           onPressed: () {
-                            if (UNiktos >= 1000) {
-                              ERNLMT();
-                            } else {
-                              AdRewardinCaptcha();
-                            }
+                            AdRewardinCaptcha();
                           },
                           child: Container(
                             height: 30,
@@ -525,32 +492,6 @@ void initializeRewardedAds()async {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> ERNLMT() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text("Limit Exccessed")),
-          content: Text(
-              "You are Level 1 User. So Level 1 User Cannot send withdraw of more than 1000 Coins. Keep Earning Daily and Increase your Level and Earn More Money."),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10),
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "Close",
-                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
-                  )),
-            )
-          ],
-        );
-      },
     );
   }
 }

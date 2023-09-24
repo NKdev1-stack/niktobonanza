@@ -191,7 +191,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
 
   @override
   void initState() {
-    _DBref.child(_authID.currentUser!.uid).update({"AppVersion": "1.54.0"});
+    _DBref.child(_authID.currentUser!.uid).update({"AppVersion": "1.56.0"});
     initializeInterstitialAds();
     initializeRewardedAds();
     Getdata();

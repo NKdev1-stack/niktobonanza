@@ -20,9 +20,6 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
   late Animation<double> animation;
   var shouldAbsorb = true;
 
-  
-
-
   // FirebaseJB
 
   final _fAuth = FirebaseAuth.instance;
@@ -37,107 +34,99 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
   bool adBtnshow = false;
 
   final String _interstitial_ad_unit_id = "450bc990d365b2fb";
- final String _rewarded_ad_unit_id =  "2eda4b8d0c86c6fc";
+  final String _rewarded_ad_unit_id = "2eda4b8d0c86c6fc";
 
- var _interstitialRetryAttempt = 0;
- var _rewardedAdRetryAttempt = 0;
+  var _interstitialRetryAttempt = 0;
+  var _rewardedAdRetryAttempt = 0;
 
- bool INTisReady = true;
- bool  RWDisReady = true;
- final String _ad_unit_id = "45a079225c19874b";
- // / Int Ad
- initializeInterstitialAds() async{
-   INTisReady = (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
+  bool INTisReady = true;
+  bool RWDisReady = true;
+  final String _ad_unit_id = "45a079225c19874b";
+  // / Int Ad
+  initializeInterstitialAds() async {
+    INTisReady =
+        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
 
-   AppLovinMAX.setInterstitialListener(InterstitialListener(
-     onAdLoadedCallback: (ad) {
-       // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
+    AppLovinMAX.setInterstitialListener(InterstitialListener(
+      onAdLoadedCallback: (ad) {
+        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
 
-       // Reset retry attempt
-       _interstitialRetryAttempt = 0;
-     },
-     onAdLoadFailedCallback: (adUnitId, error) {
-       // Interstitial ad failed to load
-       // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-       _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
+        // Reset retry attempt
+        _interstitialRetryAttempt = 0;
+      },
+      onAdLoadFailedCallback: (adUnitId, error) {
+        // Interstitial ad failed to load
+        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
 
-       int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
+        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
 
-       print('Interstitial ad failed to load with code ' + error.code.toString() + ' - retrying in ' + retryDelay.toString() + 's');
+        print('Interstitial ad failed to load with code ' +
+            error.code.toString() +
+            ' - retrying in ' +
+            retryDelay.toString() +
+            's');
 
-       Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-         AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-       });
-     },
-     onAdDisplayedCallback: (ad) {
-
-       // Advertisement
+        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+          AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+        });
+      },
+      onAdDisplayedCallback: (ad) {
+        // Advertisement
 // Int Ad
-  _rDb.child(_fAuth.currentUser!.uid).update({
-           "I_ID": ServerValue.increment(1),
-         });
+        _rDb.child(_fAuth.currentUser!.uid).update({
+          "I_ID": ServerValue.increment(1),
+        });
+      },
+      onAdDisplayFailedCallback: (ad, error) {
+        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+      },
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {},
+    ));
 
+    // Load the first interstitial
+    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+  }
 
-     },
-     onAdDisplayFailedCallback: (ad, error) {
-       AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-     },
-     onAdClickedCallback: (ad) {
+  void initializeRewardedAds() async {
+    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
 
-     },
-     onAdHiddenCallback: (ad) {
+    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
 
-     },
-   ));
+    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
+        onAdLoadedCallback: (ad) {
+          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
 
-   // Load the first interstitial
-   AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
- }
+          // Reset retry attempt
+          _rewardedAdRetryAttempt = 0;
+        },
+        onAdLoadFailedCallback: (adUnitId, error) {
+          // Rewarded ad failed to load
+          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
 
- 
- void initializeRewardedAds()async {
-   RWDisReady =  (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
+          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
+          print('Rewarded ad failed to load with code ' +
+              error.code.toString() +
+              ' - retrying in ' +
+              retryDelay.toString() +
+              's');
 
-   AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-
-   AppLovinMAX.setRewardedAdListener(
-       RewardedAdListener(onAdLoadedCallback: (ad) {
-         // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
-
-         // Reset retry attempt
-         _rewardedAdRetryAttempt = 0;
-       },
-           onAdLoadFailedCallback: (adUnitId, error) {
-             // Rewarded ad failed to load
-             // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-             _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
-
-             int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-             print('Rewarded ad failed to load with code ' +
-                 error.code.toString() + ' - retrying in ' +
-                 retryDelay.toString() + 's');
-
-             Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-               AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-             });
-           },
-           onAdDisplayedCallback: (ad) {
-
-             Utils().message("Watch Ad to Get More Chance");
-           },
-           onAdDisplayFailedCallback: (ad, error) {
-             Utils().message("Please Wait! Or try Again After Some Time");
-
-           },
-           onAdClickedCallback: (ad) {
-
-           },
-           onAdHiddenCallback: (ad) {
-
-           },
-           onAdReceivedRewardCallback: (ad, reward) {
-
-             // Reward Ad
+          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+          });
+        },
+        onAdDisplayedCallback: (ad) {
+          Utils().message("Watch Ad to Get More Chance");
+        },
+        onAdDisplayFailedCallback: (ad, error) {
+          Utils().message("Please Wait! Or try Again After Some Time");
+        },
+        onAdClickedCallback: (ad) {},
+        onAdHiddenCallback: (ad) {},
+        onAdReceivedRewardCallback: (ad, reward) {
+          // Reward Ad
 // Giving More Chances
           _rDb.child(_fAuth.currentUser!.uid).update({
             'Dice': 5,
@@ -146,26 +135,24 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
           _rDb.child(_fAuth.currentUser!.uid).update({
             'R_ID': ServerValue.increment(1),
           });
-           }));
- }
+        }));
+  }
 
   // Reward Ad
 // Giving More Chances
-          // _rDb.child(_fAuth.currentUser!.uid).update({
-          //   'Dice': 5,
-          // });
-          // // Update RWD AD in DB
-          // _rDb.child(_fAuth.currentUser!.uid).update({
-          //   'R_ID': ServerValue.increment(1),
-          // });
-
- 
+  // _rDb.child(_fAuth.currentUser!.uid).update({
+  //   'Dice': 5,
+  // });
+  // // Update RWD AD in DB
+  // _rDb.child(_fAuth.currentUser!.uid).update({
+  //   'R_ID': ServerValue.increment(1),
+  // });
 
   void initState() {
 // Ads load
 
-   initializeRewardedAds();
-   initializeInterstitialAds();
+    initializeRewardedAds();
+    initializeInterstitialAds();
 
     // Firebase Method
     getUserData();
@@ -228,14 +215,15 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
 
       Utils().message("You Won $diceRandomNo Niktos");
 
+      if (diceRandomNo == 1 ||
+          diceRandomNo == 4 ||
+          diceRandomNo == 6 ||
+          diceRandomNo == 2) {
+        initializeInterstitialAds();
 
-      if (diceRandomNo == 1 || diceRandomNo == 4 || diceRandomNo == 6 || diceRandomNo == 2) {
-     
-    initializeInterstitialAds();
-
-                          if (INTisReady) {
-                            AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-                          }
+        if (INTisReady) {
+          AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
+        }
       }
     });
     // Animation setting
@@ -299,12 +287,11 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
 
   // AdReward
   AdRewardinDice() {
-  
-   initializeRewardedAds();
+    initializeRewardedAds();
 
-                          if (RWDisReady) {
-                            AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-                          }
+    if (RWDisReady) {
+      AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
+    }
   }
 
   schek() {
@@ -322,22 +309,16 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
               end: Alignment.bottomLeft,
               colors: [Colors.blue.shade700, Colors.blue.shade200])),
       child: Scaffold(
-         
-     bottomNavigationBar:  MaxAdView(
-          adUnitId:_ad_unit_id,
-          adFormat: AdFormat.banner,
-          listener: AdViewAdListener(onAdLoadedCallback: (ad) {
-
-          }, onAdLoadFailedCallback: (adUnitId, error) {
-
-          }, onAdClickedCallback: (ad) {
-
-          }, onAdExpandedCallback: (ad) {
-
-          }, onAdCollapsedCallback: (ad) {
-
-          }),
-        ),
+          bottomNavigationBar: MaxAdView(
+            adUnitId: _ad_unit_id,
+            adFormat: AdFormat.banner,
+            listener: AdViewAdListener(
+                onAdLoadedCallback: (ad) {},
+                onAdLoadFailedCallback: (adUnitId, error) {},
+                onAdClickedCallback: (ad) {},
+                onAdExpandedCallback: (ad) {},
+                onAdCollapsedCallback: (ad) {}),
+          ),
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             elevation: 0,
@@ -448,17 +429,13 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
                   turns: animation,
                   child: GestureDetector(
                       onTap: () {
-                        if (Niktos >= 1000) {
-                          ERNLMT();
-                        } else {
-                          schek();
-                          setState(() {
-                            if (shouldAbsorb) {
-                              shouldAbsorb = false;
-                              Roll();
-                            } else {}
-                          });
-                        }
+                        schek();
+                        setState(() {
+                          if (shouldAbsorb) {
+                            shouldAbsorb = false;
+                            Roll();
+                          } else {}
+                        });
                       },
                       child: Visibility(
                           visible: diceshow,
@@ -477,11 +454,7 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black38),
                     onPressed: () {
-                      if (Niktos >= 1000) {
-                        ERNLMT();
-                      } else {
-                        AdRewardinDice();
-                      }
+                      AdRewardinDice();
                     },
                     child: Container(
                       height: 30,
@@ -503,32 +476,6 @@ class _DicerState extends State<Dicer> with TickerProviderStateMixin {
               ),
             ]),
           )),
-    );
-  }
-
-  Future<void> ERNLMT() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text("Limit Exccessed")),
-          content: Text(
-              "You are Level 1 User. So Level 1 User Cannot send withdraw of more than 1000 Coins. Keep Earning Daily and Increase your Level and Earn More Money."),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10),
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "Close",
-                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
-                  )),
-            )
-          ],
-        );
-      },
     );
   }
 }

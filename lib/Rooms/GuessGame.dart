@@ -26,124 +26,112 @@ class _GuessRoomState extends State<GuessRoom> {
 
   TextEditingController _guessController = TextEditingController();
 
-
   //DB
   final _auth = FirebaseAuth.instance;
   final _refDb = FirebaseDatabase.instance.ref("Workers");
   final _key = GlobalKey<FormState>();
   Random random = Random();
 
- final String _interstitial_ad_unit_id = "450bc990d365b2fb";
- final String _rewarded_ad_unit_id =  "2eda4b8d0c86c6fc";
+  final String _interstitial_ad_unit_id = "450bc990d365b2fb";
+  final String _rewarded_ad_unit_id = "2eda4b8d0c86c6fc";
 
- var _interstitialRetryAttempt = 0;
- var _rewardedAdRetryAttempt = 0;
+  var _interstitialRetryAttempt = 0;
+  var _rewardedAdRetryAttempt = 0;
 
- bool INTisReady = true;
- bool  RWDisReady = true;
- final String _ad_unit_id = "45a079225c19874b";
-
-
+  bool INTisReady = true;
+  bool RWDisReady = true;
+  final String _ad_unit_id = "45a079225c19874b";
 
 // / Int Ad
- initializeInterstitialAds() async{
-   INTisReady = (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
+  initializeInterstitialAds() async {
+    INTisReady =
+        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
 
-   AppLovinMAX.setInterstitialListener(InterstitialListener(
-     onAdLoadedCallback: (ad) {
-       // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
+    AppLovinMAX.setInterstitialListener(InterstitialListener(
+      onAdLoadedCallback: (ad) {
+        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
 
-       // Reset retry attempt
-       _interstitialRetryAttempt = 0;
-     },
-     onAdLoadFailedCallback: (adUnitId, error) {
-       // Interstitial ad failed to load
-       // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-       _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
+        // Reset retry attempt
+        _interstitialRetryAttempt = 0;
+      },
+      onAdLoadFailedCallback: (adUnitId, error) {
+        // Interstitial ad failed to load
+        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
 
-       int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
+        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
 
-       print('Interstitial ad failed to load with code ' + error.code.toString() + ' - retrying in ' + retryDelay.toString() + 's');
+        print('Interstitial ad failed to load with code ' +
+            error.code.toString() +
+            ' - retrying in ' +
+            retryDelay.toString() +
+            's');
 
-       Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-         AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-       });
-     },
-     onAdDisplayedCallback: (ad) {
-
-      // Advertisement
+        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+          AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+        });
+      },
+      onAdDisplayedCallback: (ad) {
+        // Advertisement
 // / Int Ad
 
-  _refDb.child(_auth.currentUser!.uid).update({
+        _refDb.child(_auth.currentUser!.uid).update({
           "I_ID": ServerValue.increment(1),
         });
-  
+      },
+      onAdDisplayFailedCallback: (ad, error) {
+        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+      },
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {},
+    ));
 
-     },
-     onAdDisplayFailedCallback: (ad, error) {
-       AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-     },
-     onAdClickedCallback: (ad) {
-
-     },
-     onAdHiddenCallback: (ad) {
-
-     },
-   ));
-
-   // Load the first interstitial
-   AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
- }
-
+    // Load the first interstitial
+    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
+  }
 
 // Reward Ad
 
-void initializeRewardedAds()async {
-   RWDisReady =  (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
+  void initializeRewardedAds() async {
+    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
 
-   AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
 
-   AppLovinMAX.setRewardedAdListener(
-       RewardedAdListener(onAdLoadedCallback: (ad) {
-         // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
+    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
+        onAdLoadedCallback: (ad) {
+          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
 
-         // Reset retry attempt
-         _rewardedAdRetryAttempt = 0;
-       },
-           onAdLoadFailedCallback: (adUnitId, error) {
-             // Rewarded ad failed to load
-             // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-             _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
+          // Reset retry attempt
+          _rewardedAdRetryAttempt = 0;
+        },
+        onAdLoadFailedCallback: (adUnitId, error) {
+          // Rewarded ad failed to load
+          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
+          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
 
-             int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-             print('Rewarded ad failed to load with code ' +
-                 error.code.toString() + ' - retrying in ' +
-                 retryDelay.toString() + 's');
+          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
+          print('Rewarded ad failed to load with code ' +
+              error.code.toString() +
+              ' - retrying in ' +
+              retryDelay.toString() +
+              's');
 
-             Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-               AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-             });
-           },
-           onAdDisplayedCallback: (ad) {
-
-             Utils().message("Watch Ad to Get More Chance");
-           },
-           onAdDisplayFailedCallback: (ad, error) {
-             Utils().message("Please Wait! Or try Again After Some Time");
-
-           },
-           onAdClickedCallback: (ad) {
-
-           },
-           onAdHiddenCallback: (ad) {
-
-           },
-           onAdReceivedRewardCallback: (ad, reward) {
-
-          
+          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+          });
+        },
+        onAdDisplayedCallback: (ad) {
+          Utils().message("Watch Ad to Get More Chance");
+        },
+        onAdDisplayFailedCallback: (ad, error) {
+          Utils().message("Please Wait! Or try Again After Some Time");
+        },
+        onAdClickedCallback: (ad) {},
+        onAdHiddenCallback: (ad) {},
+        onAdReceivedRewardCallback: (ad, reward) {
 // Reward Ad
 
- // Giving More Chances
+          // Giving More Chances
           _refDb.child(_auth.currentUser!.uid).update({
             'Guesses': 5,
           });
@@ -151,19 +139,13 @@ void initializeRewardedAds()async {
           _refDb.child(_auth.currentUser!.uid).update({
             'R_ID': ServerValue.increment(1),
           });
-           }));
- }
-
-
-     
-
-  
+        }));
+  }
 
   @override
   void initState() {
-
-  initializeRewardedAds();
-   initializeInterstitialAds();
+    initializeRewardedAds();
+    initializeInterstitialAds();
     GuessNoGenerator();
     gettingFDB();
     super.initState();
@@ -225,9 +207,9 @@ void initializeRewardedAds()async {
   Guessnocheck() {
     initializeInterstitialAds();
 
-                          if (INTisReady) {
-                            AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-                          }
+    if (INTisReady) {
+      AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
+    }
     if (guessNumber == int.parse(_guessController.text.toString())) {
       decreaseChance();
 
@@ -259,11 +241,11 @@ void initializeRewardedAds()async {
 
   // Adreward in Guess
   AdRewardinGuess() {
-     initializeRewardedAds();
+    initializeRewardedAds();
 
-                          if (RWDisReady) {
-                            AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-                          }
+    if (RWDisReady) {
+      AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
+    }
   }
 
   schek() {
@@ -281,20 +263,15 @@ void initializeRewardedAds()async {
               end: Alignment.bottomLeft,
               colors: [Colors.blue.shade700, Colors.blue.shade200])),
       child: Scaffold(
-      bottomNavigationBar:  MaxAdView(
-          adUnitId:_ad_unit_id,
+        bottomNavigationBar: MaxAdView(
+          adUnitId: _ad_unit_id,
           adFormat: AdFormat.banner,
-          listener: AdViewAdListener(onAdLoadedCallback: (ad) {
-
-          }, onAdLoadFailedCallback: (adUnitId, error) {
-
-          }, onAdClickedCallback: (ad) {
-
-          }, onAdExpandedCallback: (ad) {
-
-          }, onAdCollapsedCallback: (ad) {
-
-          }),
+          listener: AdViewAdListener(
+              onAdLoadedCallback: (ad) {},
+              onAdLoadFailedCallback: (adUnitId, error) {},
+              onAdClickedCallback: (ad) {},
+              onAdExpandedCallback: (ad) {},
+              onAdCollapsedCallback: (ad) {}),
         ),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -438,22 +415,19 @@ void initializeRewardedAds()async {
                     ),
                     InkWell(
                       onTap: () {
-                        if (UNiktos >= 1000) {
-                          ERNLMT();
-                        } else {
                         initializeInterstitialAds();
 
-                          if (INTisReady) {
-                            AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-                          }
-                          setState(() {
-                            if (_key.currentState!.validate()) {
-                              Guessnocheck();
-                              gettingFDB();
-                              schek();
-                            }
-                          });
+                        if (INTisReady) {
+                          AppLovinMAX.showInterstitial(
+                              _interstitial_ad_unit_id);
                         }
+                        setState(() {
+                          if (_key.currentState!.validate()) {
+                            Guessnocheck();
+                            gettingFDB();
+                            schek();
+                          }
+                        });
                       },
                       child: Visibility(
                         visible: checkButton,
@@ -490,11 +464,7 @@ void initializeRewardedAds()async {
                           style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.black38),
                           onPressed: () {
-                            if (UNiktos >= 1000) {
-                              ERNLMT();
-                            } else {
-                              AdRewardinGuess();
-                            }
+                            AdRewardinGuess();
                           },
                           child: Container(
                             height: 30,
@@ -522,32 +492,6 @@ void initializeRewardedAds()async {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> ERNLMT() {
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Center(child: Text("Limit Exccessed")),
-          content: Text(
-              "You are Level 1 User. So Level 1 User Cannot send withdraw of more than 1000 Coins. Keep Earning Daily and Increase your Level and Earn More Money."),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10, bottom: 10),
-              child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "Close",
-                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
-                  )),
-            )
-          ],
-        );
-      },
     );
   }
 }
