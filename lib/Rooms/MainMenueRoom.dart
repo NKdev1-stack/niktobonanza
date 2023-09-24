@@ -9,7 +9,6 @@ import 'package:niktobonanza/Rooms/GuessGame.dart';
 import 'package:niktobonanza/Rooms/QuizRoom.dart';
 import 'package:niktobonanza/Rooms/ScratchRoom.dart';
 import 'package:niktobonanza/pmnt.dart';
-
 import '../utils/Toast.dart';
 import 'DiceRoom.dart';
 
@@ -323,11 +322,6 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
           actions: [
             InkWell(
                 onTap: () {
-                  initializeClickInterstitialAds();
-
-                  if (INTisReady) {
-                    AppLovinMAX.showInterstitial(_interestitial_click_unit);
-                  }
                   Info();
                 },
                 child: const Icon(
