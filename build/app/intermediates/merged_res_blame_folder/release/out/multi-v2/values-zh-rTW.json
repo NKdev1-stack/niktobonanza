@@ -1,0 +1,87 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.nkdevelopers.niktoearningapp-mergeReleaseResources-44:/values-zh-rTW/values-zh-rTW.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\436c10522305b0c44089aaea22d149bb\\transformed\\browser-1.4.0\\res\\values-zh-rTW\\values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,139,231,332",
+                        "endColumns": "83,91,100,92",
+                        "endOffsets": "134,226,327,420"
+                    },
+                    "to": {
+                        "startLines": "28,29,30,31",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "2422,2506,2598,2699",
+                        "endColumns": "83,91,100,92",
+                        "endOffsets": "2501,2593,2694,2787"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\1724461c716dfee24ec329b868e7992c\\transformed\\jetified-play-services-base-18.1.0\\res\\values-zh-rTW\\values.xml",
+                    "from": {
+                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+                        "startColumns": "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0",
+                        "startOffsets": "197,294,418,529,627,730,842,938,1029,1135,1232,1357,1468,1566,1670,1722,1775",
+                        "endColumns": "96,123,110,97,102,111,95,90,105,96,124,110,97,103,51,52,69",
+                        "endOffsets": "293,417,528,626,729,841,937,1028,1134,1231,1356,1467,1565,1669,1721,1774,1844"
+                    },
+                    "to": {
+                        "startLines": "10,11,12,13,14,15,16,17,19,20,21,22,23,24,25,26,27",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "603,704,832,947,1049,1156,1272,1372,1570,1680,1781,1910,2025,2127,2235,2291,2348",
+                        "endColumns": "100,127,114,101,106,115,99,94,109,100,128,114,101,107,55,56,73",
+                        "endOffsets": "699,827,942,1044,1151,1267,1367,1462,1675,1776,1905,2020,2122,2230,2286,2343,2417"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\32bfcc4219179e97ac64d664f4ee85e9\\transformed\\core-1.9.0\\res\\values-zh-rTW\\values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "32",
+                        "startColumns": "4",
+                        "startOffsets": "2792",
+                        "endColumns": "100",
+                        "endOffsets": "2888"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\746f6e58146f6289a14e58e68e21edb0\\transformed\\jetified-applovin-sdk-12.1.0\\res\\values-zh-rTW\\values-zh-rTW.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9",
+                        "startColumns": "4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,131,185,246,341,417,479,543",
+                        "endColumns": "75,53,60,94,75,61,63,59",
+                        "endOffsets": "126,180,241,336,412,474,538,598"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\94c5916752fb99e2828b65b80bb934de\\transformed\\jetified-play-services-basement-18.1.0\\res\\values-zh-rTW\\values.xml",
+                    "from": {
+                        "startLines": "4",
+                        "startColumns": "0",
+                        "startOffsets": "199",
+                        "endColumns": "98",
+                        "endOffsets": "297"
+                    },
+                    "to": {
+                        "startLines": "18",
+                        "startColumns": "4",
+                        "startOffsets": "1467",
+                        "endColumns": "102",
+                        "endOffsets": "1565"
+                    }
+                }
+            ]
+        }
+    ]
+}

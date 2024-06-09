@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:applovin_max/applovin_max.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 import '../utils/Toast.dart';
 
@@ -31,121 +31,74 @@ class _GuessRoomState extends State<GuessRoom> {
   final _refDb = FirebaseDatabase.instance.ref("Workers");
   final _key = GlobalKey<FormState>();
   Random random = Random();
+  //INT
 
-  final String _interstitial_ad_unit_id = "450bc990d365b2fb";
-  final String _rewarded_ad_unit_id = "2eda4b8d0c86c6fc";
+  loadAdRINT(){
+  UnityAds.load(
 
-  var _interstitialRetryAttempt = 0;
-  var _rewardedAdRetryAttempt = 0;
+  placementId: 'Interstitial_Android',
+  onComplete: (placementId) => print('Load Complete $placementId'),
+  onFailed: (placementId, error, message) => print('Load Failed $placementId: $error $message'),
+);
+}
 
-  bool INTisReady = true;
-  bool RWDisReady = true;
-  final String _ad_unit_id = "45a079225c19874b";
-
-// / Int Ad
-  initializeInterstitialAds() async {
-    INTisReady =
-        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
-
-    AppLovinMAX.setInterstitialListener(InterstitialListener(
-      onAdLoadedCallback: (ad) {
-        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
-
-        // Reset retry attempt
-        _interstitialRetryAttempt = 0;
-      },
-      onAdLoadFailedCallback: (adUnitId, error) {
-        // Interstitial ad failed to load
-        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
-
-        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
-
-        print('Interstitial ad failed to load with code ' +
-            error.code.toString() +
-            ' - retrying in ' +
-            retryDelay.toString() +
-            's');
-
-        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-          AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-        });
-      },
-      onAdDisplayedCallback: (ad) {
-        // Advertisement
-// / Int Ad
-
-        _refDb.child(_auth.currentUser!.uid).update({
+showAdINT(){
+    UnityAds.showVideoAd(
+      serverId: "",
+  placementId: 'Interstitial_Android',
+  onStart: (placementId) => print('Video Ad $placementId started'),
+  onClick: (placementId) => print('Video Ad $placementId click'),
+  onSkipped: (placementId) => print('Video Ad $placementId skipped'),
+  onComplete: (placementId) => {
+     _refDb.child(_auth.currentUser!.uid).update({
           "I_ID": ServerValue.increment(1),
-        });
-      },
-      onAdDisplayFailedCallback: (ad, error) {
-        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-      },
-      onAdClickedCallback: (ad) {},
-      onAdHiddenCallback: (ad) {},
-    ));
+        })
+  },
+  onFailed: (placementId, error, message) => print('Video Ad $placementId failed: $error $message'),
+);
+}
 
-    // Load the first interstitial
-    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-  }
 
 // Reward Ad
 
-  void initializeRewardedAds() async {
-    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
+loadAdRW(){
+  UnityAds.load(
 
-    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+  placementId: 'Rewarded_Android',
+  onComplete: (placementId) => print('Load Complete $placementId'),
+  onFailed: (placementId, error, message) => print('Load Failed $placementId: $error $message'),
+);
+}
 
-    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
-        onAdLoadedCallback: (ad) {
-          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
-
-          // Reset retry attempt
-          _rewardedAdRetryAttempt = 0;
-        },
-        onAdLoadFailedCallback: (adUnitId, error) {
-          // Rewarded ad failed to load
-          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
-
-          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-          print('Rewarded ad failed to load with code ' +
-              error.code.toString() +
-              ' - retrying in ' +
-              retryDelay.toString() +
-              's');
-
-          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-          });
-        },
-        onAdDisplayedCallback: (ad) {
-          Utils().message("Watch Ad to Get More Chance");
-        },
-        onAdDisplayFailedCallback: (ad, error) {
-          Utils().message("Please Wait! Or try Again After Some Time");
-        },
-        onAdClickedCallback: (ad) {},
-        onAdHiddenCallback: (ad) {},
-        onAdReceivedRewardCallback: (ad, reward) {
-// Reward Ad
-
-          // Giving More Chances
+showAdRW(){
+    UnityAds.showVideoAd(
+      serverId: "",
+  placementId: 'Rewarded_Android',
+  onStart: (placementId) => print('Video Ad $placementId started'),
+  onClick: (placementId) => print('Video Ad $placementId click'),
+  onSkipped: (placementId) => print('Video Ad $placementId skipped'),
+  onComplete: (placementId) => {
+    // Giving More Chances
+         // Giving More Chances
           _refDb.child(_auth.currentUser!.uid).update({
             'Guesses': 5,
-          });
+          }),
           // Update RWD AD in DB
           _refDb.child(_auth.currentUser!.uid).update({
             'R_ID': ServerValue.increment(1),
-          });
-        }));
-  }
+          })
+           },
+  onFailed: (placementId, error, message) => print('Video Ad $placementId failed: $error $message'),
+);
+}
+
+
+  
 
   @override
   void initState() {
-    initializeRewardedAds();
-    initializeInterstitialAds();
+    loadAdRINT();
+    loadAdRW();
     GuessNoGenerator();
     gettingFDB();
     super.initState();
@@ -205,14 +158,11 @@ class _GuessRoomState extends State<GuessRoom> {
   // GuessNoChecker
 
   Guessnocheck() {
-    initializeInterstitialAds();
-
-    if (INTisReady) {
-      AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-    }
+    
     if (guessNumber == int.parse(_guessController.text.toString())) {
       decreaseChance();
 
+        showAdINT();
       GuessNoGenerator();
       // Getting Niktos
       _refDb.child(_auth.currentUser!.uid).update({
@@ -241,11 +191,9 @@ class _GuessRoomState extends State<GuessRoom> {
 
   // Adreward in Guess
   AdRewardinGuess() {
-    initializeRewardedAds();
+    
+      showAdRW();
 
-    if (RWDisReady) {
-      AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-    }
   }
 
   schek() {
@@ -263,16 +211,14 @@ class _GuessRoomState extends State<GuessRoom> {
               end: Alignment.bottomLeft,
               colors: [Colors.blue.shade700, Colors.blue.shade200])),
       child: Scaffold(
-        bottomNavigationBar: MaxAdView(
-          adUnitId: _ad_unit_id,
-          adFormat: AdFormat.banner,
-          listener: AdViewAdListener(
-              onAdLoadedCallback: (ad) {},
-              onAdLoadFailedCallback: (adUnitId, error) {},
-              onAdClickedCallback: (ad) {},
-              onAdExpandedCallback: (ad) {},
-              onAdCollapsedCallback: (ad) {}),
-        ),
+       bottomNavigationBar:   
+      UnityBannerAd(
+  placementId: 'Banner_Android',
+  onLoad: (placementId) => print('Banner loaded: $placementId'),
+  onClick: (placementId) => print('Banner clicked: $placementId'),
+  onShown: (placementId) => print('Banner shown: $placementId'),
+  onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
+),
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           elevation: 0,
@@ -415,12 +361,8 @@ class _GuessRoomState extends State<GuessRoom> {
                     ),
                     InkWell(
                       onTap: () {
-                        initializeInterstitialAds();
-
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(
-                              _interstitial_ad_unit_id);
-                        }
+                       
+                       showAdINT();
                         setState(() {
                           if (_key.currentState!.validate()) {
                             Guessnocheck();

@@ -9,7 +9,7 @@
     </queries>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="BitEarn"
+        android:label="NiKto"
         android:name="${applicationName}"
                 android:usesCleartextTraffic="true"
 

@@ -1,0 +1,36 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.nkdevelopers.niktoearningapp-mergeReleaseResources-44:/values-pt/values-pt.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\32bfcc4219179e97ac64d664f4ee85e9\\transformed\\core-1.9.0\\res\\values-pt\\values-pt.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "6",
+                        "startColumns": "4",
+                        "startOffsets": "487",
+                        "endColumns": "100",
+                        "endOffsets": "583"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\436c10522305b0c44089aaea22d149bb\\transformed\\browser-1.4.0\\res\\values-pt\\values-pt.xml",
+                    "from": {
+                        "startLines": "2,3,4,5",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,170,269,381",
+                        "endColumns": "114,98,111,105",
+                        "endOffsets": "165,264,376,482"
+                    }
+                }
+            ]
+        }
+    ]
+}

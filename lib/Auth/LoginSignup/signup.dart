@@ -56,6 +56,7 @@ class _signupState extends State<signup> {
           'R_ID': 0,
           'I_ID': 0,
           'WithdrawCode': 0,
+          'APP_VERSION':"1.56.1"
 
         }).then((value) => {
           Utils().message("Welcome "+nameController.text.toString()),

@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:applovin_max/applovin_max.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:scratcher/scratcher.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 import '../utils/Toast.dart';
 
@@ -18,118 +18,77 @@ class _ScratchRoomState extends State<ScratchRoom> {
   final _authUID = FirebaseAuth.instance;
   final _ref = FirebaseDatabase.instance.ref("Workers");
 
-  final String _interstitial_ad_unit_id = "450bc990d365b2fb";
-  final String _rewarded_ad_unit_id = "07b9f55d898bba2c";
 
-  var _interstitialRetryAttempt = 0;
-  var _rewardedAdRetryAttempt = 0;
-
-  bool INTisReady = true;
-  bool RWDisReady = true;
-  final String _ad_unit_id = "45a079225c19874b";
 
 // Advertisement
 
-// Advertisement
-
-// / Int Ad
-  initializeInterstitialAds() async {
-    INTisReady =
-        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
-
-    AppLovinMAX.setInterstitialListener(InterstitialListener(
-      onAdLoadedCallback: (ad) {
-        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
-
-        // Reset retry attempt
-        _interstitialRetryAttempt = 0;
-      },
-      onAdLoadFailedCallback: (adUnitId, error) {
-        // Interstitial ad failed to load
-        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
-
-        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
-
-        print('Interstitial ad failed to load with code ' +
-            error.code.toString() +
-            ' - retrying in ' +
-            retryDelay.toString() +
-            's');
-
-        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-          AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-        });
-      },
-      onAdDisplayedCallback: (ad) {
 // Int Ad
 
-        _ref.child(_authUID.currentUser!.uid).update({
-          "I_ID": ServerValue.increment(1),
-        });
-      },
-      onAdDisplayFailedCallback: (ad, error) {
-        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-      },
-      onAdClickedCallback: (ad) {},
-      onAdHiddenCallback: (ad) {},
-    ));
+  //INT
 
-    // Load the first interstitial
-    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-  }
+  loadAdRINT(){
+  UnityAds.load(
+
+  placementId: 'Interstitial_Android',
+  onComplete: (placementId) => print('Load Complete $placementId'),
+  onFailed: (placementId, error, message) => print('Load Failed $placementId: $error $message'),
+);
+}
+
+showAdINT(){
+    UnityAds.showVideoAd(
+      serverId: "",
+  placementId: 'Interstitial_Android',
+  onStart: (placementId) => print('Video Ad $placementId started'),
+  onClick: (placementId) => print('Video Ad $placementId click'),
+  onSkipped: (placementId) => print('Video Ad $placementId skipped'),
+  onComplete: (placementId) => {
+    _ref.child(_authUID.currentUser!.uid).update({
+          "I_ID": ServerValue.increment(1),
+        })
+  },
+  onFailed: (placementId, error, message) => print('Video Ad $placementId failed: $error $message'),
+);
+}
+
 
 // Reward Ad
 
-  void initializeRewardedAds() async {
-    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
 
-    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+loadAdRW(){
+  UnityAds.load(
 
-    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
-        onAdLoadedCallback: (ad) {
-          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
+  placementId: 'Rewarded_Android',
+  onComplete: (placementId) => print('Load Complete $placementId'),
+  onFailed: (placementId, error, message) => print('Load Failed $placementId: $error $message'),
+);
+}
 
-          // Reset retry attempt
-          _rewardedAdRetryAttempt = 0;
-        },
-        onAdLoadFailedCallback: (adUnitId, error) {
-          // Rewarded ad failed to load
-          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
-
-          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-          print('Rewarded ad failed to load with code ' +
-              error.code.toString() +
-              ' - retrying in ' +
-              retryDelay.toString() +
-              's');
-
-          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-          });
-        },
-        onAdDisplayedCallback: (ad) {
-          Utils().message("Watch Ad to Get More Chance");
-        },
-        onAdDisplayFailedCallback: (ad, error) {
-          Utils().message("Please Wait! Or try Again After Some Time");
-        },
-        onAdClickedCallback: (ad) {},
-        onAdHiddenCallback: (ad) {},
-        onAdReceivedRewardCallback: (ad, reward) {
-          // Reward Ad
-          // Reward Ad
-          // Giving More Chances
+showAdRW(){
+    UnityAds.showVideoAd(
+      serverId: "",
+  placementId: 'Rewarded_Android',
+  onStart: (placementId) => print('Video Ad $placementId started'),
+  onClick: (placementId) => print('Video Ad $placementId click'),
+  onSkipped: (placementId) => print('Video Ad $placementId skipped'),
+  onComplete: (placementId) => {
+    // Giving More Chances
+         // Giving More Chances
           _ref.child(_authUID.currentUser!.uid).update({
             'Scratch': 5,
-          });
+          }),
           // Update RWD AD in DB
           _ref.child(_authUID.currentUser!.uid).update({
             'R_ID': ServerValue.increment(1),
-          });
-        }));
-  }
+          })
+  },
+  onFailed: (placementId, error, message) => print('Video Ad $placementId failed: $error $message'),
+);
+}
+
+  
+
+
 
   var Niktos = 0;
   var rnds = 0;
@@ -139,8 +98,8 @@ class _ScratchRoomState extends State<ScratchRoom> {
   @override
   initState() {
     GettingdataFirebase();
-    initializeRewardedAds();
-    initializeInterstitialAds();
+    loadAdRINT();
+    loadAdRW();
     super.initState();
   }
 
@@ -198,16 +157,13 @@ class _ScratchRoomState extends State<ScratchRoom> {
         // App bar
 
         child: Scaffold(
-          bottomNavigationBar: MaxAdView(
-            adUnitId: _ad_unit_id,
-            adFormat: AdFormat.banner,
-            listener: AdViewAdListener(
-                onAdLoadedCallback: (ad) {},
-                onAdLoadFailedCallback: (adUnitId, error) {},
-                onAdClickedCallback: (ad) {},
-                onAdExpandedCallback: (ad) {},
-                onAdCollapsedCallback: (ad) {}),
-          ),
+         bottomNavigationBar: UnityBannerAd(
+  placementId: 'Banner_Android',
+  onLoad: (placementId) => print('Banner loaded: $placementId'),
+  onClick: (placementId) => print('Banner clicked: $placementId'),
+  onShown: (placementId) => print('Banner shown: $placementId'),
+  onFailed: (placementId, error, message) => print('Banner Ad $placementId failed: $error $message'),
+),
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             elevation: 0,
@@ -353,11 +309,7 @@ class _ScratchRoomState extends State<ScratchRoom> {
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black38),
                         onPressed: () {
-                          initializeRewardedAds();
-
-                          if (RWDisReady) {
-                            AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-                          }
+                          showAdRW();
                         },
                         child: Container(
                           height: 25,
@@ -412,18 +364,10 @@ class _ScratchRoomState extends State<ScratchRoom> {
                 final ref = FirebaseDatabase.instance.ref("Workers");
 
                 if (rnds == 10 ||
-                    rnds == 8 ||
-                    rnds == 6 ||
-                    rnds == 4 ||
-                    rnds == 1 ||
-                    rnds == 2 ||
-                    rnds == 5 ||
+                    rnds == 8 ||   
                     rnds == 3) {
-                  initializeInterstitialAds();
-
-                  if (INTisReady) {
-                    AppLovinMAX.showInterstitial(_interstitial_ad_unit_id);
-                  }
+                 
+                 showAdINT();
                 }
 
                 ref.child(_authUID.currentUser!.uid).update({

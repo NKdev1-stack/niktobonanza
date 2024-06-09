@@ -19,6 +19,7 @@ class PMNT extends StatefulWidget {
 class _PMNTState extends State<PMNT> {
   var money;
   var method;
+  var tkn = 0;
   var cashLevel = "\$ 0.01";
   var paymentLevel = "Coinbase";
   TextEditingController emailEditingController = TextEditingController();
@@ -43,6 +44,7 @@ class _PMNTState extends State<PMNT> {
         .onValue
         .listen((event) {
       satoshi = int.parse(event.snapshot.value.toString());
+
       setState(() {});
     });
 
@@ -63,6 +65,15 @@ class _PMNTState extends State<PMNT> {
       }
     });
 
+    //tk
+    _refDb
+        .child(_auth.currentUser!.uid)
+        .child("Tokens")
+        .onValue
+        .listen((event) {
+      tkn = int.parse(event.snapshot.value.toString());
+      setState(() {});
+    });
     // TD
     final now = new DateTime.now();
     formatter = DateFormat('yMd').format(now); // Format => 28/03/2020
@@ -77,6 +88,7 @@ class _PMNTState extends State<PMNT> {
       'Country': locationx["country"],
       'PaymentMethod': method,
       'Money': money,
+      'APP_VERSION':"1.56.1"
     });
 
     _refDb.child(_auth.currentUser!.uid).update({
@@ -162,16 +174,16 @@ class _PMNTState extends State<PMNT> {
                       btns(
                           onpress: () {
                             setState(() {
-                              cashLevel = "\$ 0.01";
-                              if (satoshi >= 800 && satoshi < 1000) {
-                                money = "0.01";
+                              cashLevel = "\$ 0.05";
+                              if (satoshi >= 1600 && satoshi < 2000) {
+                                money = "0.05";
                               } else {
-                                Utils().message("Minimum 800 Coins Required");
+                                Utils().message("Minimum 1600 Coins Required");
                               }
                             });
                           },
-                          title: "\$ 0.01",
-                          value: "\$ 0.01",
+                          title: "\$ 0.05",
+                          value: "\$ 0.05",
                           groupvalue: cashLevel,
                           color: Colors.grey.shade300),
                       const SizedBox(
@@ -180,16 +192,16 @@ class _PMNTState extends State<PMNT> {
                       btns(
                           onpress: () {
                             setState(() {
-                              cashLevel = "\$ 0.05";
-                              if (satoshi >= 2000 && satoshi < 2500) {
-                                money = "0.05";
+                              cashLevel = "\$ 0.08";
+                              if (satoshi >= 2200 && satoshi < 4000) {
+                                money = "0.08";
                               } else {
-                                Utils().message("Minimum 1800 Coins Required");
+                                Utils().message("Minimum 2200 Coins Required");
                               }
                             });
                           },
-                          title: "\$ 0.05",
-                          value: "\$ 0.05",
+                          title: "\$ 0.08",
+                          value: "\$ 0.08",
                           groupvalue: cashLevel,
                           color: Colors.grey.shade300),
                     ],
@@ -204,10 +216,10 @@ class _PMNTState extends State<PMNT> {
                           onpress: () {
                             setState(() {
                               cashLevel = "\$ 0.5";
-                              if (satoshi >= 5000 && satoshi < 7000) {
+                              if (satoshi >= 5000 && satoshi < 8000) {
                                 money = "0.5";
                               } else {
-                                Utils().message("Minimum 8000 Coins Required");
+                                Utils().message("Minimum 5000 Coins Required");
                               }
                             });
                           },
@@ -222,11 +234,11 @@ class _PMNTState extends State<PMNT> {
                           onpress: () {
                             setState(() {
                               cashLevel = "\$ 1.00";
-                              if (satoshi >= 8000) {
+                              if (satoshi >= 10000) {
                                 money = "1.00";
                               } else {
                                 Utils()
-                                    .message("Minimum 10,000 Coins Required");
+                                    .message("Minimum 10000 Coins Required");
                               }
                             });
                           },
@@ -378,13 +390,19 @@ class _PMNTState extends State<PMNT> {
                           borderRadius: BorderRadius.circular(8))),
                   onPressed: () {
                     if (_key.currentState!.validate()) {
-                      if (satoshi >= 800) {
+                      
+                      if (satoshi >= 1600) {
                         setState(() {
                           isNotSubmitted = false;
                         });
-                        Sside();
-                      } else if (satoshi < 800) {
-                        Utils().message("Collect Minimum 800 Satoshi");
+                        if (tkn < 0) {
+                          Utils().message(
+                              "Account Suspended! Due to Multiple Violations");
+                        } else {
+                          Sside();
+                        }
+                      } else if (satoshi < 1600) {
+                        Utils().message("Collect Minimum 1600 Satoshi for \$0.05");
                       }
                     }
                   },

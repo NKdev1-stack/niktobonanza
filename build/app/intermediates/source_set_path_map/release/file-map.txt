@@ -1,0 +1,54 @@
+com.nkdevelopers.niktoearningapp-work-runtime-ktx-2.7.0-0 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\10ce947dc3bb190d06099bf734eea514\transformed\work-runtime-ktx-2.7.0\res
+com.nkdevelopers.niktoearningapp-jetified-play-services-cronet-18.0.1-1 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\1512634fe5bc9971c6a5a6d136eb80a6\transformed\jetified-play-services-cronet-18.0.1\res
+com.nkdevelopers.niktoearningapp-jetified-play-services-base-18.1.0-2 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\1724461c716dfee24ec329b868e7992c\transformed\jetified-play-services-base-18.1.0\res
+com.nkdevelopers.niktoearningapp-jetified-annotation-experimental-1.3.0-3 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\1ce1dadbd5cfacc71a08cf19640883dd\transformed\jetified-annotation-experimental-1.3.0\res
+com.nkdevelopers.niktoearningapp-lifecycle-livedata-2.6.1-4 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\2e4cd436db94340f4b94bff7b69d4f41\transformed\lifecycle-livedata-2.6.1\res
+com.nkdevelopers.niktoearningapp-jetified-lifecycle-service-2.6.1-5 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\2f1350fd0fe69146a2f49ea998010e18\transformed\jetified-lifecycle-service-2.6.1\res
+com.nkdevelopers.niktoearningapp-core-1.9.0-6 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\32bfcc4219179e97ac64d664f4ee85e9\transformed\core-1.9.0\res
+com.nkdevelopers.niktoearningapp-jetified-startup-runtime-1.1.1-7 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\3ae8ad6c1a4f710973197561538c15c8\transformed\jetified-startup-runtime-1.1.1\res
+com.nkdevelopers.niktoearningapp-jetified-lifecycle-runtime-ktx-2.6.1-8 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\4324893835c322fb6febe5658b688a4e\transformed\jetified-lifecycle-runtime-ktx-2.6.1\res
+com.nkdevelopers.niktoearningapp-jetified-play-services-measurement-api-21.5.0-9 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\4358cdacafb02fc531d9a3f215d7d79a\transformed\jetified-play-services-measurement-api-21.5.0\res
+com.nkdevelopers.niktoearningapp-browser-1.4.0-10 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\436c10522305b0c44089aaea22d149bb\transformed\browser-1.4.0\res
+com.nkdevelopers.niktoearningapp-jetified-window-1.0.0-beta04-11 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\436c13fc3b61ffe96281d4075205f86f\transformed\jetified-window-1.0.0-beta04\res
+com.nkdevelopers.niktoearningapp-jetified-datastore-1.0.0-12 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\582af5e7719d2675a64ad0e54010357e\transformed\jetified-datastore-1.0.0\res
+com.nkdevelopers.niktoearningapp-jetified-window-java-1.0.0-beta04-13 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\5a946cda9f312cb4d5144fc302aa4e3b\transformed\jetified-window-java-1.0.0-beta04\res
+com.nkdevelopers.niktoearningapp-webkit-1.7.0-14 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\5b0871882daf8590ea73eeb9f0bcdd35\transformed\webkit-1.7.0\res
+com.nkdevelopers.niktoearningapp-jetified-firebase-messaging-23.3.1-15 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\65b7d58726f897ef67ce60b472578416\transformed\jetified-firebase-messaging-23.3.1\res
+com.nkdevelopers.niktoearningapp-jetified-profileinstaller-1.3.0-16 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\68cea889ca1f326e624853703fc7238b\transformed\jetified-profileinstaller-1.3.0\res
+com.nkdevelopers.niktoearningapp-jetified-applovin-sdk-12.1.0-17 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\746f6e58146f6289a14e58e68e21edb0\transformed\jetified-applovin-sdk-12.1.0\res
+com.nkdevelopers.niktoearningapp-core-runtime-2.2.0-18 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\7b47775f257c954ce8fca742b3493829\transformed\core-runtime-2.2.0\res
+com.nkdevelopers.niktoearningapp-jetified-firebase-common-20.4.2-19 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\86410161d5c7e054ba6c595d8f2f99b4\transformed\jetified-firebase-common-20.4.2\res
+com.nkdevelopers.niktoearningapp-jetified-lifecycle-process-2.6.1-20 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\866c557afce550022d8a32dbf113e21f\transformed\jetified-lifecycle-process-2.6.1\res
+com.nkdevelopers.niktoearningapp-jetified-savedstate-ktx-1.2.1-21 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\88c4ff853de9cee43eb8fafc88f81824\transformed\jetified-savedstate-ktx-1.2.1\res
+com.nkdevelopers.niktoearningapp-jetified-play-services-basement-18.1.0-22 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\94c5916752fb99e2828b65b80bb934de\transformed\jetified-play-services-basement-18.1.0\res
+com.nkdevelopers.niktoearningapp-jetified-savedstate-1.2.1-23 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\9c2a42d1ea23c8b104200fd2b20ef53f\transformed\jetified-savedstate-1.2.1\res
+com.nkdevelopers.niktoearningapp-jetified-lifecycle-viewmodel-ktx-2.6.1-24 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\9c2cefaf8455cde037a8e9a6840713bd\transformed\jetified-lifecycle-viewmodel-ktx-2.6.1\res
+com.nkdevelopers.niktoearningapp-lifecycle-livedata-core-2.6.1-25 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\a369ffcc14da3e126be8ee25c4709a84\transformed\lifecycle-livedata-core-2.6.1\res
+com.nkdevelopers.niktoearningapp-jetified-ads-adservices-1.0.0-beta05-26 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\ac5f13c54cb3cd28c640faccbfa541c0\transformed\jetified-ads-adservices-1.0.0-beta05\res
+com.nkdevelopers.niktoearningapp-jetified-core-ktx-1.9.0-27 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\c16e0540fb999a053a9e9449f98dbb83\transformed\jetified-core-ktx-1.9.0\res
+com.nkdevelopers.niktoearningapp-jetified-activity-ktx-1.7.1-28 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\c3067ee9bddf660f40ab90365cc8d26b\transformed\jetified-activity-ktx-1.7.1\res
+com.nkdevelopers.niktoearningapp-jetified-cronet-api-72.3626.96-29 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\c4229f69e223aa2836fce0bcba218c67\transformed\jetified-cronet-api-72.3626.96\res
+com.nkdevelopers.niktoearningapp-jetified-ads-adservices-java-1.0.0-beta05-30 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\d0cef18d972daf947c7fc49743b67b39\transformed\jetified-ads-adservices-java-1.0.0-beta05\res
+com.nkdevelopers.niktoearningapp-lifecycle-viewmodel-2.6.1-31 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\d5ce4662b1d703dbbaea6498287c3c2e\transformed\lifecycle-viewmodel-2.6.1\res
+com.nkdevelopers.niktoearningapp-localbroadcastmanager-1.1.0-32 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\d8a5ba5717b6ceb17c5c2a715bd1d4cc\transformed\localbroadcastmanager-1.1.0\res
+com.nkdevelopers.niktoearningapp-lifecycle-runtime-2.6.1-33 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\d9a7bfb3848bf33e54df0231c6af1693\transformed\lifecycle-runtime-2.6.1\res
+com.nkdevelopers.niktoearningapp-jetified-activity-1.7.1-34 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\dd13cac7571402d9e422890826bd402a\transformed\jetified-activity-1.7.1\res
+com.nkdevelopers.niktoearningapp-work-runtime-2.7.0-35 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\e19e63513d1acdd000e431f022b8d6f7\transformed\work-runtime-2.7.0\res
+com.nkdevelopers.niktoearningapp-jetified-lifecycle-viewmodel-savedstate-2.6.1-36 C:\Users\HsNain Ashfaq\.gradle\caches\transforms-3\f1184b82ccbedd76e3fc98ff8ba24f2b\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\res
+com.nkdevelopers.niktoearningapp-main-37 E:\Nikto\niktobonanza\android\app\src\main\res
+com.nkdevelopers.niktoearningapp-release-38 E:\Nikto\niktobonanza\android\app\src\release\res
+com.nkdevelopers.niktoearningapp-packaged_res-39 E:\Nikto\niktobonanza\build\android_intent\intermediates\packaged_res\release
+com.nkdevelopers.niktoearningapp-google-services-40 E:\Nikto\niktobonanza\build\app\generated\res\google-services\release
+com.nkdevelopers.niktoearningapp-pngs-41 E:\Nikto\niktobonanza\build\app\generated\res\pngs\release
+com.nkdevelopers.niktoearningapp-resValues-42 E:\Nikto\niktobonanza\build\app\generated\res\resValues\release
+com.nkdevelopers.niktoearningapp-rs-43 E:\Nikto\niktobonanza\build\app\generated\res\rs\release
+com.nkdevelopers.niktoearningapp-mergeReleaseResources-44 E:\Nikto\niktobonanza\build\app\intermediates\incremental\release\mergeReleaseResources\merged.dir
+com.nkdevelopers.niktoearningapp-mergeReleaseResources-45 E:\Nikto\niktobonanza\build\app\intermediates\incremental\release\mergeReleaseResources\stripped.dir
+com.nkdevelopers.niktoearningapp-merged_res-46 E:\Nikto\niktobonanza\build\app\intermediates\merged_res\release
+com.nkdevelopers.niktoearningapp-packaged_res-47 E:\Nikto\niktobonanza\build\applovin_max\intermediates\packaged_res\release
+com.nkdevelopers.niktoearningapp-packaged_res-48 E:\Nikto\niktobonanza\build\firebase_auth\intermediates\packaged_res\release
+com.nkdevelopers.niktoearningapp-packaged_res-49 E:\Nikto\niktobonanza\build\firebase_core\intermediates\packaged_res\release
+com.nkdevelopers.niktoearningapp-packaged_res-50 E:\Nikto\niktobonanza\build\firebase_database\intermediates\packaged_res\release
+com.nkdevelopers.niktoearningapp-packaged_res-51 E:\Nikto\niktobonanza\build\firebase_messaging\intermediates\packaged_res\release
+com.nkdevelopers.niktoearningapp-packaged_res-52 E:\Nikto\niktobonanza\build\fluttertoast\intermediates\packaged_res\release
+com.nkdevelopers.niktoearningapp-packaged_res-53 E:\Nikto\niktobonanza\build\webview_flutter_android\intermediates\packaged_res\release

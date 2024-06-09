@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:android_intent/android_intent.dart';
-import 'package:applovin_max/applovin_max.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:niktobonanza/Rooms/CaptchaRooms.dart';
 import 'package:niktobonanza/Rooms/GuessGame.dart';
 import 'package:niktobonanza/Rooms/QuizRoom.dart';
 import 'package:niktobonanza/Rooms/ScratchRoom.dart';
+import 'package:niktobonanza/Rooms/wall.dart';
 import 'package:niktobonanza/pmnt.dart';
 import '../utils/Toast.dart';
 import 'DiceRoom.dart';
@@ -36,166 +36,19 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
   final _authID = FirebaseAuth.instance;
   final _DBref = FirebaseDatabase.instance.ref("Workers");
   final _ADref = FirebaseDatabase.instance.ref("Admin");
-  final String _interstitial_ad_unit_id = "6520fe898d527766";
-  final String _interestitial_click_unit = "390881b42411d57f";
+ 
 
-  final String _rewarded_ad_unit_id = "508e2a6446c03e82";
-
-  var _interstitialRetryAttempt = 0;
-  var _rewardedAdRetryAttempt = 0;
-
-  bool INTisReady = true;
-  bool RWDisReady = true;
-
-  // Int Ad
-  initializeInterstitialAds() async {
-    INTisReady =
-        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
-
-    AppLovinMAX.setInterstitialListener(InterstitialListener(
-      onAdLoadedCallback: (ad) {
-        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
-
-        // Reset retry attempt
-        _interstitialRetryAttempt = 0;
-      },
-      onAdLoadFailedCallback: (adUnitId, error) {
-        // Interstitial ad failed to load
-        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
-
-        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
-
-        print('Interstitial ad failed to load with code ' +
-            error.code.toString() +
-            ' - retrying in ' +
-            retryDelay.toString() +
-            's');
-
-        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-          AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-        });
-      },
-      onAdDisplayedCallback: (ad) {
-        _DBref.child(_authID.currentUser!.uid).update({
-          "I_ID": ServerValue.increment(1),
-          "Niktos": ServerValue.increment(5),
-        });
-      },
-      onAdDisplayFailedCallback: (ad, error) {
-        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-        Utils().message("Please Wait! Or try Again After Some Time");
-      },
-      onAdClickedCallback: (ad) {},
-      onAdHiddenCallback: (ad) {},
-    ));
-
-    // Load the first interstitial
-    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-  }
-
-  // ClickAd
-  initializeClickInterstitialAds() async {
-    INTisReady =
-        (await AppLovinMAX.isInterstitialReady(_interestitial_click_unit))!;
-
-    AppLovinMAX.setInterstitialListener(InterstitialListener(
-      onAdLoadedCallback: (ad) {
-        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
-
-        // Reset retry attempt
-        _interstitialRetryAttempt = 0;
-      },
-      onAdLoadFailedCallback: (adUnitId, error) {
-        // Interstitial ad failed to load
-        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
-
-        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
-
-        print('Interstitial ad failed to load with code ' +
-            error.code.toString() +
-            ' - retrying in ' +
-            retryDelay.toString() +
-            's');
-
-        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-          AppLovinMAX.loadInterstitial(_interestitial_click_unit);
-        });
-      },
-      onAdDisplayedCallback: (ad) {
-        _DBref.child(_authID.currentUser!.uid).update({
-          "I_ID": ServerValue.increment(1),
-        });
-      },
-      onAdDisplayFailedCallback: (ad, error) {
-        AppLovinMAX.loadInterstitial(_interestitial_click_unit);
-      },
-      onAdClickedCallback: (ad) {},
-      onAdHiddenCallback: (ad) {},
-    ));
-
-    // Load the first interstitial
-    AppLovinMAX.loadInterstitial(_interestitial_click_unit);
-  }
-
-  // Reward Ad
-  void initializeRewardedAds() async {
-    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
-
-    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-
-    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
-        onAdLoadedCallback: (ad) {
-          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
-
-          // Reset retry attempt
-          _rewardedAdRetryAttempt = 0;
-        },
-        onAdLoadFailedCallback: (adUnitId, error) {
-          // Rewarded ad failed to load
-          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
-
-          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-          print('Rewarded ad failed to load with code ' +
-              error.code.toString() +
-              ' - retrying in ' +
-              retryDelay.toString() +
-              's');
-
-          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-          });
-        },
-        onAdDisplayedCallback: (ad) {
-          Utils().message("Watch Ad to Get More Chance");
-        },
-        onAdDisplayFailedCallback: (ad, error) {
-          Utils().message("Please Wait! Or try Again After Some Time");
-        },
-        onAdClickedCallback: (ad) {},
-        onAdHiddenCallback: (ad) {},
-        onAdReceivedRewardCallback: (ad, reward) {
-          //// Reward Ad
-//  Giving More Chances
-          _DBref.child(_authID.currentUser!.uid).update({
-            'Niktos': ServerValue.increment(5),
-          });
-          // Update RWD AD in DB
-          _DBref.child(_authID.currentUser!.uid).update({
-            'R_ID': ServerValue.increment(1),
-          });
-        }));
-  }
+// Coins Adding Code
+//  _DBref.child(_authID.currentUser!.uid).update({
+//           "I_ID": ServerValue.increment(1),
+//           "Niktos": ServerValue.increment(5),
+//         });
 
   @override
   void initState() {
     _DBref.child(_authID.currentUser!.uid).update({"AppVersion": "1.56.0"});
-    initializeInterstitialAds();
-    initializeRewardedAds();
+   
     Getdata();
-    initializeClickInterstitialAds();
 
     super.initState();
   }
@@ -332,7 +185,6 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: InkWell(
                 onTap: () {
-                  initializeInterstitialAds();
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -350,7 +202,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
           automaticallyImplyLeading: false,
           backgroundColor: Colors.grey.shade800,
           title: Text(
-            "BitEarn",
+            "NiKto",
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -399,14 +251,14 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Name: ",
+                                  "Welcome ",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 22),
                                 ),
                                 Text(
-                                  "$UName",
+                                  "$UName!",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -422,7 +274,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "Satoshi: ",
+                                  "NiKtos: ",
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -525,7 +377,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                   ),
                                   Text("Slide Left For More >",
                                       style: TextStyle(
-                                        color: Colors.green,
+                                        color: Colors.amber,
                                       )),
                                 ],
                               ),
@@ -541,7 +393,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.32,
                                   decoration: BoxDecoration(
-                                      color: Colors.green,
+                                      color: Colors.red,
                                       borderRadius: BorderRadius.circular(20)),
                                   child: Center(
                                       child: Text(
@@ -610,7 +462,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.32,
                                   decoration: BoxDecoration(
-                                      color: Colors.green,
+                                      color: Colors.red,
                                       borderRadius: BorderRadius.circular(20)),
                                   child: Center(
                                       child: Text(
@@ -662,17 +514,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                         children: [
                           InkWell(
                             onTap: () {
-                              initializeInterstitialAds();
-                              if (INTisReady) {
-                                AppLovinMAX.showInterstitial(
-                                    _interstitial_ad_unit_id);
-                              }
-
-                              initializeInterstitialAds();
-                              if (INTisReady) {
-                                AppLovinMAX.showInterstitial(
-                                    _interstitial_ad_unit_id);
-                              }
+                             Gift();
                             },
                             child: Material(
                               color: Colors.transparent,
@@ -693,7 +535,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage:
-                                          AssetImage("assets/images/gift.png"),
+                                          NetworkImage("https://res.cloudinary.com/dghloo9lv/image/upload/v1702399263/present_2743217_1_b6g42i.png"),
                                     ),
                                     Text(
                                       "Gift Box",
@@ -710,11 +552,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                           ),
                           InkWell(
                             onTap: () {
-                              initializeClickInterstitialAds();
-                              if (INTisReady) {
-                                AppLovinMAX.showInterstitial(
-                                    _interestitial_click_unit);
-                              }
+                              
 
                               Navigator.push(
                                   context,
@@ -741,7 +579,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage: NetworkImage(
-                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1685626100/icons8-foreclosure-96_nlqizc.png"),
+                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1702399221/scratch_6027216_1_zoh7so.png"),
                                     ),
                                     Text(
                                       "Scratches",
@@ -758,11 +596,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                           ),
                           InkWell(
                             onTap: () {
-                              initializeClickInterstitialAds();
-                              if (INTisReady) {
-                                AppLovinMAX.showInterstitial(
-                                    _interestitial_click_unit);
-                              }
+                              
 
                               Navigator.push(
                                   context,
@@ -788,7 +622,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage: NetworkImage(
-                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1685626230/icons8-bot-96_f8tewf.png"),
+                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1702399377/robot_189740_l9rr8s.png"),
                                     ),
                                     Text(
                                       "Captchas",
@@ -829,11 +663,9 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                         children: [
                           InkWell(
                             onTap: () {
-                              initializeRewardedAds();
-                              if (RWDisReady) {
-                                AppLovinMAX.showRewardedAd(
-                                    _rewarded_ad_unit_id);
-                              }
+                              
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => WallRoom(),));
+
                             },
                             child: Material(
                               color: Colors.transparent,
@@ -854,10 +686,10 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage: NetworkImage(
-                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1685626586/icons8-marketing-agency-64_h57xye.png"),
+                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1702558732/discount-tag_6149117_dqfaii.png"),
                                     ),
                                     Text(
-                                      "Videos",
+                                      "Offers",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16),
                                     )
@@ -871,11 +703,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                           ),
                           InkWell(
                             onTap: () {
-                              initializeClickInterstitialAds();
-                              if (INTisReady) {
-                                AppLovinMAX.showInterstitial(
-                                    _interestitial_click_unit);
-                              }
+                             
 
                               Navigator.push(
                                   context,
@@ -902,7 +730,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage: NetworkImage(
-                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1685626706/icons8-roulette-96_kk1ts7.png"),
+                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1702399601/dice_8336933_bdqmxv.png"),
                                     ),
                                     Text(
                                       "Lucky Dice",
@@ -919,11 +747,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                           ),
                           InkWell(
                             onTap: () {
-                              initializeClickInterstitialAds();
-                              if (INTisReady) {
-                                AppLovinMAX.showInterstitial(
-                                    _interestitial_click_unit);
-                              }
+                              
 
                               Navigator.push(
                                   context,
@@ -1005,11 +829,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      initializeClickInterstitialAds();
-                                      if (INTisReady) {
-                                        AppLovinMAX.showInterstitial(
-                                            _interestitial_click_unit);
-                                      }
+                                      
 
                                       Navigator.push(
                                           context,
@@ -1062,7 +882,7 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
                                       backgroundColor: Colors.white70,
                                       radius: 28,
                                       backgroundImage: NetworkImage(
-                                          "https://seeklogo.com/images/I/instagram-logo-E0067A1403-seeklogo.com.png"),
+                                          "https://res.cloudinary.com/dghloo9lv/image/upload/v1702399707/instagram_3955024_nx6krq.png"),
                                     ),
                                   ),
                                   Text(
@@ -1135,12 +955,49 @@ class _MainMenueRoomState extends State<MainMenueRoom> {
         return AlertDialog(
           title: Center(child: Text("How To Use")),
           content: Text(
-              "Perform Different Tasks, Play Games and Collect Satoshis once you reached "
-              "the Minimum Threshold which is 800 Satoshi than choose the wallet and submit Withdrawal Request."
+              "Perform Different Tasks, Play Games and Collect NiKtos once you reached "
+               "the Minimum Threshold which is 1600 NiKtos than choose the wallet and submit Withdrawal Request."
               "Once System Received your Withdrawal Request than After Completing Security Checkup "
               "We will release your payouts instantly."
               "Keep In Mind. Use Correct Coinbase,Binance,Paypal and Faucet Email for Withdrawal Otherwise we are not responsible if you don't receive your money."
-              "\nContact with Support Team via Twitter or Instagram for instant help."),
+              "\nContact with Support Team via Twitter or Instagram for instant help. For OfferWall Once You complete the offer send Screenshot with Email on instagram. We will pay you extra Dollars for Your Work"),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10, bottom: 10),
+              child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Close",
+                    style: TextStyle(fontSize: 16, color: Colors.red.shade900),
+                  )),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> Gift() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0),),
+          title: Center(child: Text("Sorry! Try Again later")),
+          content: Column(
+            
+            mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.network("https://res.cloudinary.com/dghloo9lv/image/upload/v1692711063/Pickle_rick_Ramen_on_a_street_food_counter_pixel_a-removebg-preview_s0whdi.png",height: 200,),
+                SizedBox(height: 20,),
+                Text(
+              "Curretly No Gift Found For You Try Again later ",style: TextStyle(
+                fontSize: 17
+              ),)
+              ],
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 10, bottom: 10),

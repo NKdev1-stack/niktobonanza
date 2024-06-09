@@ -1,0 +1,39 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.nkdevelopers.niktoearningapp-mergeDebugResources-44:/values-v21/values-v21.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\32bfcc4219179e97ac64d664f4ee85e9\\transformed\\core-1.9.0\\res\\values-v21\\values-v21.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,13",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,173,237,304,368,484,610,736,864,1036",
+                        "endLines": "2,3,4,5,6,7,8,9,12,17",
+                        "endColumns": "117,63,66,63,115,125,125,127,12,12",
+                        "endOffsets": "168,232,299,363,479,605,731,859,1031,1383"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\HsNain Ashfaq\\.gradle\\caches\\transforms-3\\746f6e58146f6289a14e58e68e21edb0\\transformed\\jetified-applovin-sdk-12.1.0\\res\\values-v21\\values-v21.xml",
+                    "from": {
+                        "startLines": "2,9,12,19,25,28",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "55,681,939,1446,1925,2179",
+                        "endLines": "8,11,18,24,27,33",
+                        "endColumns": "12,12,12,12,12,12",
+                        "endOffsets": "676,934,1441,1920,2174,2660"
+                    },
+                    "to": {
+                        "startLines": "18,25,28,35,41,44",
+                        "startColumns": "4,4,4,4,4,4",
+                        "startOffsets": "1388,2014,2272,2779,3258,3512",
+                        "endLines": "24,27,34,40,43,49",
+                        "endColumns": "12,12,12,12,12,12",
+                        "endOffsets": "2009,2267,2774,3253,3507,3993"
+                    }
+                }
+            ]
+        }
+    ]
+}

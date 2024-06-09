@@ -1,24 +1,30 @@
-import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:niktobonanza/Rooms/QuizRoom.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 import 'Auth/Splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Map? sdkConfiguration = await AppLovinMAX.initialize(
-      "NfoOk1PAASVcJiybbx38USeNLyf2Dv9yI6ybSAfkfNGftEDKdCpXtrHyfGVK7RCq7NEq3RkEpM9n-omMlqyfbM");
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  
 
   await Firebase.initializeApp();
   String? token = await FirebaseMessaging.instance.getToken();
   print(token);
+
+
+
+UnityAds.init(
+  gameId: '5399804',
+  testMode: true,
+  onComplete: () => print('Initialization Complete'),
+  onFailed: (error, message) => print('Initialization Failed: $error $message'),
+);
+
 
   runApp(const Nikto());
 }

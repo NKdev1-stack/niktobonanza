@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'package:applovin_max/applovin_max.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:niktobonanza/Rooms/MainMenueRoom.dart';
+import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 import '../utils/Toast.dart';
 import 'Models/QuizModel.dart';
 import 'package:http/http.dart' as http;
@@ -54,100 +54,65 @@ class _QuizRoomState extends State<QuizRoom> {
 
 // Advertisement
 
-// / Int Ad
-  initializeInterstitialAds() async {
-    INTisReady =
-        (await AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id))!;
 
-    AppLovinMAX.setInterstitialListener(InterstitialListener(
-      onAdLoadedCallback: (ad) {
-        // Interstitial ad is ready to be shown. AppLovinMAX.isInterstitialReady(_interstitial_ad_unit_id) will now return 'true'
 
-        // Reset retry attempt
-        _interstitialRetryAttempt = 0;
-      },
-      onAdLoadFailedCallback: (adUnitId, error) {
-        // Interstitial ad failed to load
-        // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-        _interstitialRetryAttempt = _interstitialRetryAttempt + 1;
+   //INT
 
-        int retryDelay = pow(2, min(6, _interstitialRetryAttempt)).toInt();
+  loadAdRINT(){
+  UnityAds.load(
 
-        print('Interstitial ad failed to load with code ' +
-            error.code.toString() +
-            ' - retrying in ' +
-            retryDelay.toString() +
-            's');
+  placementId: 'Interstitial_Android',
+  onComplete: (placementId) => print('Load Complete $placementId'),
+  onFailed: (placementId, error, message) => print('Load Failed $placementId: $error $message'),
+);
+}
 
-        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-          AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-        });
-      },
-      onAdDisplayedCallback: (ad) {
-// Int Ad
+showAdINT(){
+    UnityAds.showVideoAd(
+      serverId: "",
+  placementId: 'Interstitial_Android',
+  onStart: (placementId) => print('Video Ad $placementId started'),
+  onClick: (placementId) => print('Video Ad $placementId click'),
+  onSkipped: (placementId) => print('Video Ad $placementId skipped'),
+  onComplete: (placementId) => {
+     /// Int Ad
         _DBref.child(_UAuth.currentUser!.uid).update({
           "I_ID": ServerValue.increment(1),
-        });
-      },
-      onAdDisplayFailedCallback: (ad, error) {
-        AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-      },
-      onAdClickedCallback: (ad) {},
-      onAdHiddenCallback: (ad) {},
-    ));
+        }),
+  },
+  onFailed: (placementId, error, message) => print('Video Ad $placementId failed: $error $message'),
+);
+}
 
-    // Load the first interstitial
-    AppLovinMAX.loadInterstitial(_interstitial_ad_unit_id);
-  }
 
-// Reward Ad
+  // Reward Ad
 
-  void initializeRewardedAds() async {
-    RWDisReady = (await AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id))!;
+loadAdRW(){
+  UnityAds.load(
 
-    AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
+  placementId: 'Rewarded_Android',
+  onComplete: (placementId) => print('Load Complete $placementId'),
+  onFailed: (placementId, error, message) => print('Load Failed $placementId: $error $message'),
+);
+}
 
-    AppLovinMAX.setRewardedAdListener(RewardedAdListener(
-        onAdLoadedCallback: (ad) {
-          // Rewarded ad is ready to be shown. AppLovinMAX.isRewardedAdReady(_rewarded_ad_unit_id) will now return 'true'
-
-          // Reset retry attempt
-          _rewardedAdRetryAttempt = 0;
-        },
-        onAdLoadFailedCallback: (adUnitId, error) {
-          // Rewarded ad failed to load
-          // We recommend retrying with exponentially higher delays up to a maximum delay (in this case 64 seconds)
-          _rewardedAdRetryAttempt = _rewardedAdRetryAttempt + 1;
-
-          int retryDelay = pow(2, min(6, _rewardedAdRetryAttempt)).toInt();
-          print('Rewarded ad failed to load with code ' +
-              error.code.toString() +
-              ' - retrying in ' +
-              retryDelay.toString() +
-              's');
-
-          Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-            AppLovinMAX.loadRewardedAd(_rewarded_ad_unit_id);
-          });
-        },
-        onAdDisplayedCallback: (ad) {
-          Utils().message("Watch Ad to Get More Chance");
-        },
-        onAdDisplayFailedCallback: (ad, error) {
-          Utils().message("Please Wait! Or try Again After Some Time");
-        },
-        onAdClickedCallback: (ad) {},
-        onAdHiddenCallback: (ad) {},
-        onAdReceivedRewardCallback: (ad, reward) {
-          // Reward Ad
-          // Giving More Chances
+showAdRW(){
+    UnityAds.showVideoAd(
+      serverId: "",
+  placementId: 'Rewarded_Android',
+  onStart: (placementId) => print('Video Ad $placementId started'),
+  onClick: (placementId) => print('Video Ad $placementId click'),
+  onSkipped: (placementId) => print('Video Ad $placementId skipped'),
+  onComplete: (placementId) => {
+    // Giving More Chances
+    
           _DBref.child(_UAuth.currentUser!.uid).update({
             'Quizez': 5,
-          });
+          }),
           // Update RWD AD in DB
           _DBref.child(_UAuth.currentUser!.uid).update({
             'R_ID': ServerValue.increment(1),
-          });
+          }),
 
           setState(() {
             _defaultopt1 = true;
@@ -156,9 +121,13 @@ class _QuizRoomState extends State<QuizRoom> {
             QuizShow = true;
             AdBtn = false;
             Quizez = 5;
-          });
-        }));
-  }
+          })
+           },
+  onFailed: (placementId, error, message) => print('Video Ad $placementId failed: $error $message'),
+);
+}
+
+
 
 // DB
   final _DBref = FirebaseDatabase.instance.ref("Workers");
@@ -175,8 +144,8 @@ class _QuizRoomState extends State<QuizRoom> {
 
   void initState() {
     _QUIZAPI();
-    initializeRewardedAds();
-    initializeInterstitialAds();
+    loadAdRINT();
+    loadAdRW();
     fetchdata();
 
     super.initState();
@@ -208,11 +177,9 @@ class _QuizRoomState extends State<QuizRoom> {
 
   void updateOnAd() {
     if (Quizez <= 0) {
-      initializeRewardedAds();
-
-      if (RWDisReady) {
-        AppLovinMAX.showRewardedAd(_rewarded_ad_unit_id);
-      }
+    
+    showAdRW();
+      
     }
   }
 
@@ -305,16 +272,6 @@ class _QuizRoomState extends State<QuizRoom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: MaxAdView(
-        adUnitId: _ad_unit_id,
-        adFormat: AdFormat.banner,
-        listener: AdViewAdListener(
-            onAdLoadedCallback: (ad) {},
-            onAdLoadFailedCallback: (adUnitId, error) {},
-            onAdClickedCallback: (ad) {},
-            onAdExpandedCallback: (ad) {},
-            onAdCollapsedCallback: (ad) {}),
-      ),
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.blueAccent,
@@ -403,12 +360,7 @@ class _QuizRoomState extends State<QuizRoom> {
               InkWell(
                 onTap: clicked
                     ? () {
-                        initializeInterstitialAds();
-
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(
-                              _interstitial_ad_unit_id);
-                        }
+                        
                         if (_Opt1 == _correct) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("You Won 5 Coins")));
@@ -506,13 +458,9 @@ class _QuizRoomState extends State<QuizRoom> {
               InkWell(
                 onTap: clicked
                     ? () {
-                        initializeInterstitialAds();
-
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(
-                              _interstitial_ad_unit_id);
-                        }
+                       
                         if (_Opt2 == _correct) {
+                          showAdINT();
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("You Won 8 Coins")));
 
@@ -609,13 +557,9 @@ class _QuizRoomState extends State<QuizRoom> {
               InkWell(
                 onTap: clicked
                     ? () {
-                        initializeInterstitialAds();
-
-                        if (INTisReady) {
-                          AppLovinMAX.showInterstitial(
-                              _interstitial_ad_unit_id);
-                        }
+                       
                         if (_Opt3 == _correct) {
+                          showAdINT();
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("You Won 8 Coins")));
 
